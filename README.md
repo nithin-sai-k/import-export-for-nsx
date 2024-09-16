@@ -57,6 +57,25 @@ There are two authentication modes set in `vmc.ini`: `auth_mode = token` and `au
 
 Local mode supports environment variables `EXP_srcNSXmgrURL`, `EXP_srcNSXmgrUsername`, and `EXP_srcNSXmgrPassword`. If you set these environment variables, you do not need to save these values in `vcenter.ini`
 
+Windows
+
+```powershell
+$env:EXP_srcNSXmgrURL = ""
+$env:EXP_srcNSXmgrUsername = ""
+$env:EXP_srcNSXmgrPassword = ""
+```
+
+Linux/Mac
+
+```bash
+EXP_srcNSXmgrURL=""
+export EXP_srcNSXmgrURL
+EXP_srcNSXmgrUsername=""
+export EXP_srcNSXmgrUsername
+EXP_srcNSXmgrPassword=""
+export EXP_srcNSXmgrPassword
+```
+
 If you use local mode, you do not need any other settings in `vmc.ini`
 
 Version 1.1 introduces the gov_cloud_urls flag in vmc.ini. The default value is False - change this value to True if you are using GovCloud.
