@@ -1,0 +1,7 @@
+*.json
+__pycache__
+.DS_Store
+venv-impexp
+.idea
+.vscode
+*.code-workspace
