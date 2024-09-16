@@ -77,8 +77,6 @@ dest_org_id             = XXXXXXXXXXXXXXX
 dest_sddc_id            = XXXXXXXXXXXXXXX
 ```
 
-The vmc.ini configuration can also be passed via command line. Use nsx_import_export --help for syntax.
-
 ### 1.3.5. Update config.ini
 
 Config.ini contains configuration sections for import and export.
