@@ -189,7 +189,7 @@ Ensure that you have granted the execution role write permissions to your S3 buc
 Add the following files individually to the function code, or zip them up and upload all at once:
 
 - config_ini/*
-- lambda_handler.py
+- invoke_lambda.py
 - nsx_import_export.py
 - VMCImportExport.py
 

@@ -7,7 +7,7 @@
 ################################################################################
 
 import json
-import nsx_export
+import nsx_import_export
 
 # export, import, or export-import
 operation               = 'export'
@@ -44,7 +44,7 @@ def lambda_handler(event, context):
     # TODO implement
     print(event)
     print(context)
-    nsx_export.main(['-o',f'{operation}','-et',f'{export_type}','-ef',f'{export_folder}','-so',f'{source_org_id}','-ss',f'{source_sddc_id}','-do',f'{dest_org_id}','-ds',f'{dest_sddc_id}','-st',f'{source_refresh_token}','-dt',f'{dest_refresh_token}','-s3b',f'{aws_s3_export_bucket}'])
+    nsx_import_export.main(['-o',f'{operation}','-et',f'{export_type}','-ef',f'{export_folder}','-so',f'{source_org_id}','-ss',f'{source_sddc_id}','-do',f'{dest_org_id}','-ds',f'{dest_sddc_id}','-st',f'{source_refresh_token}','-dt',f'{dest_refresh_token}','-s3b',f'{aws_s3_export_bucket}'])
     return {
         'statusCode': 200,
         'body': json.dumps('Execution complete.')
