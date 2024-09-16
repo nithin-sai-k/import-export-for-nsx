@@ -274,6 +274,10 @@ class VMCImportExport:
         #VMs
         self.vms_filename           = self.loadConfigFilename(config, "importConfig", "vms_filename")
         self.vm_vifs_filename       = self.loadConfigFilename(config, "importConfig", "vm_vifs_filename")
+
+        #CGW API name
+        self.cgw_api_name           = self.loadConfigSetting(config, "exportConfig", "cgw_api_name")
+
         #CGW groups
         self.cgw_groups_filename     = self.loadConfigFilename(config,"importConfig","cgw_groups_filename")
 
@@ -3786,6 +3790,14 @@ class VMCImportExport:
             expressionList = []
 
         return expressionList
+
+    def loadConfigSetting(self, config, section, key):
+        """Loads a string from the config file"""
+        try:
+            setting = config.get(section, key)
+            return setting
+        except:
+            return None
 
     def loadConfigFilename(self,config,section,key):
         """Loads a JSON filename from the config file, with hard-coded defaults if they are missing."""
