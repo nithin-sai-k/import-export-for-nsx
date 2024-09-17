@@ -53,9 +53,9 @@ python -m pip install -r requirements.txt
 
 ### 1.3.4. Update vmc.ini
 
-There are two authentication modes set in `vmc.ini`: `auth_mode = token` and `auth_mode = local`. Token mode uses a VMware Cloud on AWS API token to authenticate to the VMware Cloud on AWS service, and only works with VMC-A. If you have any other NSX-T deployment, you must use local mode. Local mode will authenticate directly from a local NSX-T manager. If you use token mode, you must fill in the refresh token and org/SDDC ID fields in `vmc.ini`. If you use local mode, you must fill in the `srcNSXmgrURL`, `srcNSXmgrUsername`, `srcNSXmgrPassword` fields in `vcenter.ini`
+There are two authentication modes set in `vmc.ini`: `auth_mode = token` and `auth_mode = local`. Token mode uses a VMware Cloud on AWS API token to authenticate to the VMware Cloud on AWS service, and only works with VMC-A. If you have any other NSX-T deployment, you must use local mode. Local mode will authenticate directly from a local NSX-T manager. If you use token mode, you must fill in the refresh token and org/SDDC ID fields in `vmc.ini`. If you use local mode, you can fill in the `srcNSXmgrURL`, `srcNSXmgrUsername`, `srcNSXmgrPassword` fields in `vcenter.ini`. However, if you do not want credentials persisted in plaintext, you can use other methods shown below.
 
-Local mode supports environment variables `EXP_srcNSXmgrURL`, `EXP_srcNSXmgrUsername`, and `EXP_srcNSXmgrPassword`. If you set these environment variables, you do not need to save these values in `vcenter.ini`
+Local mode supports environment variables `EXP_srcNSXmgrURL`, `EXP_srcNSXmgrUsername`, and `EXP_srcNSXmgrPassword`. If you set these environment variables, you do not need to save these values in `vcenter.ini`.
 
 Windows
 
@@ -76,13 +76,23 @@ EXP_srcNSXmgrPassword=""
 export EXP_srcNSXmgrPassword
 ```
 
+If you do not want to use environment variables, you can leave them blank. If values are not found in vcenter.ini, and not found in environment variables, the program will then prompt you to enter values as shown below.
+
+```bash
+Current authentication mode: local
+Source NSX manager URL was not found in the environment variables.
+Enter source NSX manager URL: http://nsxmgr.domain.local
+Source NSX manager username was not found in the environment variables.
+Enter source NSX manager username: admin
+Source NSX password was not found in the environment variables.
+Enter source NSX manager password: ******************************
+```
+
 If you use local mode, you do not need any other settings in `vmc.ini`
 
-Version 1.1 introduces the gov_cloud_urls flag in vmc.ini. The default value is False - change this value to True if you are using GovCloud.
+For token mode, access to the VMware Cloud on AWS API is dependent on a refresh token. To generate a token for your account, see the [Generate API Tokens](https://docs.vmware.com/en/VMware-Cloud-services/services/Using-VMware-Cloud-Services/GUID-E2A3B1C1-E9AD-4B00-A6B6-88D31FCDDF7C.html) help article.
 
-Access to the VMware Cloud on AWS API is dependent on a refresh token. To generate a token for your account, see the [Generate API Tokens](https://docs.vmware.com/en/VMware-Cloud-services/services/Using-VMware-Cloud-Services/GUID-E2A3B1C1-E9AD-4B00-A6B6-88D31FCDDF7C.html) help article.
-
-The Org ID and SDDC ID can be found on the Support tab of your SDDCs.
+For token mode, the Org ID and SDDC ID can be found on the Support tab of your SDDCs.
 
 ```bash
 # Refresh tokens generated in the VMC console. Users have a separate token in each org

@@ -43,6 +43,7 @@ import requests                          # need this for Get/Post/Delete
 import configparser                     # parsing config file
 import time
 import glob
+import maskpass
 from pathlib import Path
 from prettytable import PrettyTable
 import json
@@ -192,6 +193,21 @@ def main(args):
 
 
     print(f"Current authentication mode: {ioObj.auth_mode}")
+
+    # If env variables are not populated, prompt user for input
+    if ioObj.auth_mode == "local":
+        while ioObj.srcNSXmgrURL == "":
+            print("Source NSX manager URL was not found in the environment variables.")
+            ioObj.srcNSXmgrURL = input("Enter source NSX manager URL: ")
+
+        while ioObj.srcNSXmgrUsername == "":
+            print("Source NSX manager username was not found in the environment variables.")
+            ioObj.srcNSXmgrUsername = input("Enter source NSX manager username: ")
+
+        while ioObj.srcNSXmgrPassword == "":
+            print("Source NSX manager password was not found in the environment variables.")
+            ioObj.srcNSXmgrPassword = maskpass.askpass(prompt="Enter source NSX manager password: ", mask="*")
+
     # Variable added so we can have an intent run multiple operations
     no_intent_found = True
 
