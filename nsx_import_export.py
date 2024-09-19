@@ -523,6 +523,10 @@ def main(args):
                 sys.exit()
 
             print(f'Exporting data from NSX-T manager {ioObj.srcNSXmgrURL}')
+            success = ioObj.source_nsx_mgr_authenticate()
+            if success is False:
+                print("NSX-T manager authentication failed.")
+                sys.exit()
 
         if intent_name == "list-t1":
             json_response = ioObj.get_t1_gateways()

@@ -109,6 +109,8 @@ class VMCImportExport:
         if self.auth_mode == "token":
             self.vmc_auth                     = vmc_auth.VMCAuth(strCSPProdURL=self.strCSPProdURL)
         self.source_refresh_token     = vmcConfig.get("vmcConfig", "source_refresh_token")
+        self.source_nsx_mgr_cookie    = None
+        self.source_nsx_mgr_token     = None
         self.source_org_id            = vmcConfig.get("vmcConfig", "source_org_id")
         self.source_sddc_id           = vmcConfig.get("vmcConfig", "source_sddc_id")
         self.dest_refresh_token       = vmcConfig.get("vmcConfig", "dest_refresh_token")
@@ -1377,7 +1379,6 @@ class VMCImportExport:
         if self.auth_mode == "token":
             response = self.invokeVMCGET(myURL)
         else:
-
             response = self.invokeNSXTGET(myURL)
             
         if response is None or response.status_code != 200:
@@ -2400,9 +2401,15 @@ class VMCImportExport:
             return None
 
     def invokeNSXTGET(self,url: str) -> requests.Response:
-        myHeader = {"Content-Type": "application/json","Accept": "application/json"}
+        myHeader = {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+            "Cookie": self.source_nsx_mgr_cookie,
+            "X-XSRF-TOKEN": self.source_nsx_mgr_token
+        }
+
         try:
-            response = requests.get(url,headers=myHeader, auth=(self.srcNSXmgrUsername ,self.srcNSXmgrPassword), verify=self.srcNSXmgrSSLVerify)
+            response = requests.get(url,headers=myHeader, verify=self.srcNSXmgrSSLVerify)
             if response.status_code != 200:
                 self.lastJSONResponse = f'API Call Status {response.status_code}, text:{response.text}'
             return response
@@ -3983,3 +3990,21 @@ class VMCImportExport:
 
         self.user_search_results_json = response.json()
         return True
+
+    def source_nsx_mgr_authenticate(self) -> bool:
+        myURL = (self.srcNSXmgrURL + "/api/session/create")
+        myHeader = {"Content-Type": "application/json","Accept": "application/json"}
+        json_body = {"j_password":self.srcNSXmgrPassword, "j_username":self.srcNSXmgrUsername}
+
+        try:
+            response = requests.post(myURL, data=json_body, verify=False)
+            if response.status_code == 200:
+                self.source_nsx_mgr_cookie = response.headers["set-cookie"]
+                self.source_nsx_mgr_token = response.headers["x-xsrf-token"]
+                return True
+            else:
+                self.lastJSONResponse = f'API Call Status {response.status_code}, text:{response.text}'
+                return False
+        except Exception as e:
+            print(f"Unable to authenticate to {myURL}: {e}")
+            return False
