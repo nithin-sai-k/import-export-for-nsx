@@ -99,6 +99,7 @@ def main(args):
     ap.add_argument("-s3b","--aws-s3-export-bucket", required=False,help="AWS bucket name for export to S3")
     # ap.add_argument("-rss","--role-sync-source-user-email", required=False, help="The source email address used as a template for syncing roles")
     # ap.add_argument("-rsd","--role-sync-dest-user-emails", required=False, help="The dest email addresses used as a target for syncing roles, formatted as a set")
+    ap.add_argument("-cgwname", "--cgw-api-name", required=False, help="The relative path of the T1 gateway that you want to retrieve.")
 
     args = ap.parse_args(args)
 
@@ -191,6 +192,9 @@ def main(args):
     #     ioObj.RoleSyncDestUserEmails = args.role_sync_dest_user_emails.split(',')
     #     print('Loaded role sync dest user emails from command line')
 
+    if args.cgw_api_name:
+        ioObj.cgw_api_name = args.cgw_api_name
+        print('Loaded CGW API name from command line')
 
     print(f"Current authentication mode: {ioObj.auth_mode}")
 
@@ -533,8 +537,15 @@ def main(args):
             if json_response is None:
                 print("Unable to retrieve T1 gateways.")
             else:
+                if os.name == 'nt':
+                    py_cmd = "python"
+                else:
+                    py_cmd = "python3"
+
                 for t1 in json_response['results']:
+                    
                     print(f"T1 name: {t1['display_name']}, path: {t1['path']}, relative path: {t1['relative_path']}, T0 path: {t1['tier0_path']}")
+                    print(f"         Export syntax: {py_cmd} {sys.argv[0]} -o export --cgw-api-name \"{t1['relative_path']}\"")
 
             return
         
