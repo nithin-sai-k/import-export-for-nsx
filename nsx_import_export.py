@@ -536,6 +536,8 @@ def main(args):
             json_response = ioObj.get_t1_gateways()
             if json_response is None:
                 print("Unable to retrieve T1 gateways.")
+            elif json_response['result_count'] == 0:
+                print("No Tier-1 routers found")
             else:
                 if os.name == 'nt':
                     py_cmd = "python"
