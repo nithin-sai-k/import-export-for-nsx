@@ -3997,7 +3997,7 @@ class VMCImportExport:
         json_body = {"j_password":self.srcNSXmgrPassword, "j_username":self.srcNSXmgrUsername}
 
         try:
-            response = requests.post(myURL, data=json_body, verify=False)
+            response = requests.post(myURL, data=json_body, verify=self.srcNSXmgrSSLVerify)
             if response.status_code == 200:
                 self.source_nsx_mgr_cookie = response.headers["set-cookie"]
                 self.source_nsx_mgr_token = response.headers["x-xsrf-token"]
