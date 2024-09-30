@@ -68,7 +68,8 @@ class VMCImportExport:
         self.aws_s3_export_bucket = ""
         # Users can configure a different name for exporting from NSX-T on-prem
         # The default for VMware Cloud on AWS is 'cgw'
-        self.cgw_api_name = "cgw"
+        self.t1_api_name = "cgw"
+        self.nsx_domain_name = "cgw"
         self.cgw_groups_import_error_dict = {}
         self.cgw_groups_import_exclude_list = []
         self.cgw_import_exclude_list = []
@@ -278,7 +279,8 @@ class VMCImportExport:
         self.vm_vifs_filename       = self.loadConfigFilename(config, "importConfig", "vm_vifs_filename")
 
         #CGW API name
-        self.cgw_api_name           = self.loadConfigSetting(config, "exportConfig", "cgw_api_name")
+        self.t1_api_name           = self.loadConfigSetting(config, "exportConfig", "t1_api_name")
+        self.nsx_domain_name       = self.loadConfigSetting(config, "exportConfig", "nsx_domain_name")
 
         #CGW groups
         self.cgw_groups_filename     = self.loadConfigFilename(config,"importConfig","cgw_groups_filename")
@@ -603,7 +605,7 @@ class VMCImportExport:
             payload["display_name"]=group["display_name"]
             if self.import_mode == "live":
                 myHeader = {"Content-Type": "application/json","Accept": "application/json", 'csp-auth-token': self.vmc_auth.access_token }
-                myURL = self.proxy_url + f"/policy/api/v1/infra/domains/{self.cgw_api_name}/groups/" + group["id"]
+                myURL = self.proxy_url + f"/policy/api/v1/infra/domains/{self.nsx_domain_name}/groups/" + group["id"]
                 if "expression" in group:
                     group_expression = group["expression"]
                     for item in group_expression:
@@ -658,7 +660,7 @@ class VMCImportExport:
                 payload["stateful"] = cmap["stateful"]
                 if self.import_mode == 'live':
                     myHeader = {"Content-Type": "application/json","Accept": "application/json", 'csp-auth-token': self.vmc_auth.access_token }
-                    myURL = self.proxy_url_short + f"/policy/api/v1/infra/domains/{self.cgw_api_name}/security-policies/" + cmap["id"]
+                    myURL = self.proxy_url_short + f"/policy/api/v1/infra/domains/{self.nsx_domain_name}/security-policies/" + cmap["id"]
                     json_data = json.dumps(payload)
                     if self.sync_mode is True:
                         response = requests.patch(myURL,headers=myHeader,data=json_data)
@@ -675,8 +677,8 @@ class VMCImportExport:
                     payload["resource_type"] = commEnt["resource_type"]
                     payload["source_groups"] = commEnt["source_groups"]
                     payload["destination_groups"] = commEnt["destination_groups"]
-                    payload['source_groups'] = [group.replace('/infra/domains/default/groups', f'/infra/domains/{self.cgw_api_name}/groups') for group in payload['source_groups']]
-                    payload['destination_groups'] = [group.replace('/infra/domains/default/groups', f'/infra/domains/{self.cgw_api_name}/groups') for group in payload['destination_groups']]
+                    payload['source_groups'] = [group.replace('/infra/domains/default/groups', f'/infra/domains/{self.nsx_domain_name}/groups') for group in payload['source_groups']]
+                    payload['destination_groups'] = [group.replace('/infra/domains/default/groups', f'/infra/domains/{self.nsx_domain_name}/groups') for group in payload['destination_groups']]
                     payload["destination_groups"]
                     if "scope" in commEnt:
                         payload["scope"] = commEnt["scope"]
@@ -687,7 +689,7 @@ class VMCImportExport:
                     payload["disabled"] = commEnt["disabled"]
 
                     if self.import_mode == 'live':
-                        myURL = self.proxy_url + f"/policy/api/v1/infra/domains/{self.cgw_api_name}/security-policies/" + cmap["id"] + "/rules/" + commEnt["id"]
+                        myURL = self.proxy_url + f"/policy/api/v1/infra/domains/{self.nsx_domain_name}/security-policies/" + cmap["id"] + "/rules/" + commEnt["id"]
                         myHeader = {"Content-Type": "application/json","Accept": "application/json", 'csp-auth-token': self.vmc_auth.access_token }
                         json_data = json.dumps(payload)
                         if self.sync_mode is True:
@@ -706,10 +708,10 @@ class VMCImportExport:
     def exportSDDCCGWnetworks(self):
         """Exports the CGW network segments to a JSON file"""
         if self.auth_mode =="token":
-            myURL = (self.proxy_url + f"/policy/api/v1/infra/tier-1s/{self.cgw_api_name}/segments")
+            myURL = (self.proxy_url + f"/policy/api/v1/infra/tier-1s/{self.t1_api_name}/segments")
             response = self.invokeVMCGET(myURL)
         else:
-            myURL = (self.srcNSXmgrURL + f"/policy/api/v1/infra/tier-1s/{self.cgw_api_name}/segments")
+            myURL = (self.srcNSXmgrURL + f"/policy/api/v1/infra/tier-1s/{self.t1_api_name}/segments")
             response = self.invokeNSXTGET(myURL)
 
         if response is None or response.status_code != 200:
@@ -733,10 +735,10 @@ class VMCImportExport:
     def getSDDCCGWDHCPBindings( self, segment_id: str):
         """Appends any DHCP static bindings for segment_id to the class variable CGWDHCPbindings"""
         if self.auth_mode =="token":
-            myURL = (self.proxy_url + f'/policy/api/v1/infra/tier-1s/{self.cgw_api_name}/segments/{segment_id}/dhcp-static-binding-configs')
+            myURL = (self.proxy_url + f'/policy/api/v1/infra/tier-1s/{self.t1_api_name}/segments/{segment_id}/dhcp-static-binding-configs')
             response = self.invokeVMCGET(myURL)
         else:
-            myURL = (self.srcNSXmgrURL+ f'/policy/api/v1/infra/tier-1s/{self.cgw_api_name}/segments/{segment_id}/dhcp-static-binding-configs')
+            myURL = (self.srcNSXmgrURL+ f'/policy/api/v1/infra/tier-1s/{self.t1_api_name}/segments/{segment_id}/dhcp-static-binding-configs')
             response = self.invokeNSXTGET(myURL)
 
         if response is None or response.status_code != 200:
@@ -809,10 +811,10 @@ class VMCImportExport:
     def exportSDDCCGWRule(self):
         """Exports the CGW firewall rules to a JSON file"""
         if self.auth_mode =="token":
-            myURL = (self.proxy_url + f"/policy/api/v1/infra/domains/{self.cgw_api_name}/gateway-policies/default/rules")
+            myURL = (self.proxy_url + f"/policy/api/v1/infra/domains/{self.nsx_domain_name}/gateway-policies/default/rules")
             response = self.invokeVMCGET(myURL)
         else:
-            myURL = (self.srcNSXmgrURL + f"/policy/api/v1/infra/domains/{self.cgw_api_name}/gateway-policies/default/rules")
+            myURL = (self.srcNSXmgrURL + f"/policy/api/v1/infra/domains/{self.nsx_domain_name}/gateway-policies/default/rules")
             response = self.invokeNSXTGET(myURL)
 
         if response is None or response.status_code != 200:
@@ -921,7 +923,7 @@ class VMCImportExport:
         mcgw_fw_policy_json = {}
         for x in mcgw_policy_list:
             # print(json.dumps(x, indent=2))
-            my_url = f'{self.proxy_url}/policy/api/v1/infra/domains/{self.cgw_api_name}/gateway-policies/{x}'
+            my_url = f'{self.proxy_url}/policy/api/v1/infra/domains/{self.nsx_domain_name}/gateway-policies/{x}'
             response = self.invokeCSPGET(my_url)
             if response is None or response.status_code != 200:
                 return False
@@ -1038,7 +1040,7 @@ class VMCImportExport:
         return True
 
     def export_ids_policies(self):
-        my_url = f'{self.proxy_url_short}/policy/api/v1/infra/domains/{self.cgw_api_name}/intrusion-service-policies'
+        my_url = f'{self.proxy_url_short}/policy/api/v1/infra/domains/{self.nsx_domain_name}/intrusion-service-policies'
         response = self.invokeCSPGET(my_url)
         json_response = response.json()
         nsxaf_policies = json_response['results']
@@ -1052,7 +1054,7 @@ class VMCImportExport:
         return True, policy_count, policy_list
 
     def export_ids_rules(self, ids_policy_name):
-        my_url = f'{self.proxy_url_short}/policy/api/v1/infra/domains/{self.cgw_api_name}/intrusion-service-policies/{ids_policy_name}/rules'
+        my_url = f'{self.proxy_url_short}/policy/api/v1/infra/domains/{self.nsx_domain_name}/intrusion-service-policies/{ids_policy_name}/rules'
         response = self.invokeCSPGET(my_url)
         json_response = response.json()
         nsxaf_rules = json_response['results'][0]
@@ -1150,10 +1152,10 @@ class VMCImportExport:
     def exportSDDCDFWRule(self):
         """Exports the DFW firewall rules to a JSON file"""
         if self.auth_mode =="token":
-            myURL = (self.proxy_url + f"/policy/api/v1/infra/domains/{self.cgw_api_name}/security-policies")
+            myURL = (self.proxy_url + f"/policy/api/v1/infra/domains/{self.nsx_domain_name}/security-policies")
             response = self.invokeVMCGET(myURL)
         else:
-            myURL = (self.srcNSXmgrURL+ f"/policy/api/v1/infra/domains/{self.cgw_api_name}/security-policies")
+            myURL = (self.srcNSXmgrURL+ f"/policy/api/v1/infra/domains/{self.nsx_domain_name}/security-policies")
             response = self.invokeNSXTGET(myURL)
     
         if response is None or response.status_code != 200:
@@ -1163,10 +1165,10 @@ class VMCImportExport:
         sddc_Detailed_DFWrules = {}
         for cmap in sddc_DFWrules:
             if self.auth_mode == "token":
-                myURL = self.proxy_url + f"/policy/api/v1/infra/domains/{self.cgw_api_name}/security-policies/" + cmap["id"] + "/rules"
+                myURL = self.proxy_url + f"/policy/api/v1/infra/domains/{self.nsx_domain_name}/security-policies/" + cmap["id"] + "/rules"
                 response = self.invokeVMCGET(myURL)
             else:
-                myURL = self.srcNSXmgrURL + f"/policy/api/v1/infra/domains/{self.cgw_api_name}/security-policies/" + cmap["id"] + "/rules"
+                myURL = self.srcNSXmgrURL + f"/policy/api/v1/infra/domains/{self.nsx_domain_name}/security-policies/" + cmap["id"] + "/rules"
                 response = self.invokeNSXTGET(myURL)
 
             if response is None or response.status_code != 200:
@@ -1210,7 +1212,7 @@ class VMCImportExport:
             payload["stateful"] = cmap["stateful"]
             if self.import_mode == 'live':
                 myHeader = {"Content-Type": "application/json","Accept": "application/json", 'csp-auth-token': self.vmc_auth.access_token }
-                myURL = self.proxy_url_short + f"/policy/api/v1/infra/domains/{self.cgw_api_name}/security-policies/" + cmap["id"]
+                myURL = self.proxy_url_short + f"/policy/api/v1/infra/domains/{self.nsx_domain_name}/security-policies/" + cmap["id"]
                 json_data = json.dumps(payload)
                 if self.sync_mode is True:
                     response = requests.patch(myURL,headers=myHeader,data=json_data)
@@ -1237,7 +1239,7 @@ class VMCImportExport:
                 payload["logged"] = commEnt["logged"]
                 payload["disabled"] = commEnt["disabled"]
                 if self.import_mode == 'live':
-                    myURL = self.proxy_url + f"/policy/api/v1/infra/domains/{self.cgw_api_name}/security-policies/" + cmap["id"] + "/rules/" + commEnt["id"]
+                    myURL = self.proxy_url + f"/policy/api/v1/infra/domains/{self.nsx_domain_name}/security-policies/" + cmap["id"] + "/rules/" + commEnt["id"]
                     myHeader = {"Content-Type": "application/json","Accept": "application/json", 'csp-auth-token': self.vmc_auth.access_token }
                     json_data = json.dumps(payload)
                     if self.sync_mode is True:
@@ -1733,7 +1735,7 @@ class VMCImportExport:
             
             if self.import_mode == "live":
                 myHeader = {"Content-Type": "application/json","Accept": "application/json", 'csp-auth-token': self.vmc_auth.access_token }
-                myURL = (self.proxy_url + f"/policy/api/v1/infra/tier-1s/{self.cgw_api_name}/segments/" + n['id'])
+                myURL = (self.proxy_url + f"/policy/api/v1/infra/tier-1s/{self.t1_api_name}/segments/" + n['id'])
                 if self.sync_mode is True:
                     response = requests.patch(myURL, headers=myHeader, json=json_data)
                 else:
@@ -2454,7 +2456,7 @@ class VMCImportExport:
         """Creates a new CGW Group"""
         self.vmc_auth.check_access_token_expiration()
         myHeader = {"Content-Type": "application/json","Accept": "application/json", 'csp-auth-token': self.vmc_auth.access_token }
-        myURL = self.proxy_url + f"/policy/api/v1/infra/domains/{self.cgw_api_name}/groups/" + group_name
+        myURL = self.proxy_url + f"/policy/api/v1/infra/domains/{self.nsx_domain_name}/groups/" + group_name
 
         if vm_name_to_add is None:
             vm_name_to_add = "sample_vm_" + group_name
@@ -2497,7 +2499,7 @@ class VMCImportExport:
     def deleteAllSDDCCGWGroups(self):
         """ Just what it sounds like - delete every single CGW group. Use with caution"""
         self.vmc_auth.check_access_token_expiration()
-        myURL = self.proxy_url + f"/policy/api/v1/infra/domains/{self.cgw_api_name}/groups"
+        myURL = self.proxy_url + f"/policy/api/v1/infra/domains/{self.nsx_domain_name}/groups"
         response = self.invokeVMCGET(myURL)
         if response is None or response.status_code != 200:
             return False
@@ -2506,7 +2508,7 @@ class VMCImportExport:
 
         # After grabbing an intial set of results, check for presence of a cursor
         while "cursor" in json_response:
-            myURL = self.proxy_url + f"/policy/api/v1/infra/domains/{self.cgw_api_name}/groups?cursor=" + json_response['cursor']
+            myURL = self.proxy_url + f"/policy/api/v1/infra/domains/{self.nsx_domain_name}/groups?cursor=" + json_response['cursor']
             response = self.invokeVMCGET(myURL)
             if response is None or response.status_code != 200:
                 return False
@@ -2520,7 +2522,7 @@ class VMCImportExport:
         """Deletes a CGW Group"""
         self.vmc_auth.check_access_token_expiration()
         myHeader = {"Content-Type": "application/json","Accept": "application/json", 'csp-auth-token': self.vmc_auth.access_token }
-        myURL = self.proxy_url + f"/policy/api/v1/infra/domains/{self.cgw_api_name}/groups/" + group_name
+        myURL = self.proxy_url + f"/policy/api/v1/infra/domains/{self.nsx_domain_name}/groups/" + group_name
 
         #json_data = {"display_name":group_name, "id":group_name }
         if self.import_mode == "live":
@@ -2543,9 +2545,9 @@ class VMCImportExport:
             debug_page_size = 20
 
             if self.auth_mode =="token":
-                myURL = (self.proxy_url + f"/policy/api/v1/infra/domains/{self.cgw_api_name}/groups")
+                myURL = (self.proxy_url + f"/policy/api/v1/infra/domains/{self.nsx_domain_name}/groups")
             else:
-                myURL = (self.srcNSXmgrURL+ f"/policy/api/v1/infra/domains/{self.cgw_api_name}/groups")
+                myURL = (self.srcNSXmgrURL+ f"/policy/api/v1/infra/domains/{self.nsx_domain_name}/groups")
 
             if debug_mode:
                 myURL += f'?page_size={debug_page_size}'
@@ -2567,7 +2569,7 @@ class VMCImportExport:
             # After grabbing an intial set of results, check for presence of a cursor
             while "cursor" in json_response:
                 result_count -= debug_page_size
-                myURL = self.proxy_url + f"/policy/api/v1/infra/domains/{self.cgw_api_name}/groups?cursor=" + json_response['cursor']
+                myURL = self.proxy_url + f"/policy/api/v1/infra/domains/{self.nsx_domain_name}/groups?cursor=" + json_response['cursor']
                 if debug_mode:
                     print(f'{result_count} records to go.')
                     myURL += f'&page_size={debug_page_size}'
@@ -2907,7 +2909,7 @@ class VMCImportExport:
                 if self.import_mode == "live":
                     json_data = json.dumps(payload)
                     myHeader = {"Content-Type": "application/json","Accept": "application/json", 'csp-auth-token': self.vmc_auth.access_token }
-                    myURL = self.proxy_url + f"/policy/api/v1/infra/domains/{self.cgw_api_name}/gateway-policies/default/rules/" + rule["id"]
+                    myURL = self.proxy_url + f"/policy/api/v1/infra/domains/{self.nsx_domain_name}/gateway-policies/default/rules/" + rule["id"]
                     json_data = json.dumps(payload)
                     if self.sync_mode is True:
                         createfwruleresp = requests.patch(myURL,headers=myHeader,data=json_data)
@@ -2959,7 +2961,7 @@ class VMCImportExport:
 
                 if self.import_mode == "live":
                     myHeader = {"Content-Type": "application/json","Accept": "application/json", 'csp-auth-token': self.vmc_auth.access_token }
-                    myURL = self.proxy_url + f"/policy/api/v1/infra/domains/{self.cgw_api_name}/groups/" + group["id"]
+                    myURL = self.proxy_url + f"/policy/api/v1/infra/domains/{self.nsx_domain_name}/groups/" + group["id"]
                     if "expression" in group:
                         group_expression = group["expression"]
                         for item in group_expression:
@@ -2967,7 +2969,7 @@ class VMCImportExport:
                                 skip_vm_expression = True
                                 msg = f'CGW Group {group["display_name"]} cannot be imported as it relies on VM external ID.'
                                 print(msg)
-                                path = f"/infra/domains/{self.cgw_api_name}/groups/" + group["id"]
+                                path = f"/infra/domains/{self.nsx_domain_name}/groups/" + group["id"]
                                 self.cgw_groups_import_error_dict[path] = { "display_name": payload["display_name"] , "error_message": msg }
                                 break
                     else:
@@ -3443,10 +3445,10 @@ class VMCImportExport:
         """Exports the NAT rules to a JSON file"""
         if self.auth_mode =="token":
             self.vmc_auth.check_access_token_expiration()
-            myURL = (self.proxy_url + f"/policy/api/v1/infra/tier-1s/{self.cgw_api_name}/nat/USER/nat-rules")
+            myURL = (self.proxy_url + f"/policy/api/v1/infra/tier-1s/{self.t1_api_name}/nat/USER/nat-rules")
             response = self.invokeVMCGET(myURL)
         else:
-            myURL = (self.srcNSXmgrURL+ f"/policy/api/v1/infra/tier-1s/{self.cgw_api_name}/nat/USER/nat-rules")
+            myURL = (self.srcNSXmgrURL+ f"/policy/api/v1/infra/tier-1s/{self.t1_api_name}/nat/USER/nat-rules")
             response = self.invokeNSXTGET(myURL)
 
         if response is None or response.status_code != 200:
@@ -3487,7 +3489,7 @@ class VMCImportExport:
                     old_ip = n["translated_network"]
                     json_data["translated_network"] = public_ip_old_new[old_ip]
                     new_ip_name_dash = json_data["translated_network"].replace(".","-")
-                    myURL = (self.proxy_url + f"/policy/api/v1/infra/tier-1s/{self.cgw_api_name}/nat/USER/nat-rules/" + (n['display_name']).replace(" ", "-") + "-" + new_ip_name_dash)
+                    myURL = (self.proxy_url + f"/policy/api/v1/infra/tier-1s/{self.t1_api_name}/nat/USER/nat-rules/" + (n['display_name']).replace(" ", "-") + "-" + new_ip_name_dash)
                     myHeader = {'csp-auth-token': self.vmc_auth.access_token}
                     response = requests.put(myURL, headers=myHeader, json=json_data)
                     json_response_status_code = response.status_code
@@ -3499,7 +3501,7 @@ class VMCImportExport:
                     json_data["translated_ports"] = n["translated_ports"]
                     json_data["service"] = n["service"]
                     new_ip_name_dash = json_data["destination_network"].replace(".","-")
-                    myURL = (self.proxy_url + f"/policy/api/v1/infra/tier-1s/{self.cgw_api_name}/nat/USER/nat-rules/" + (n['display_name']).replace(" ", "-") + "-" + new_ip_name_dash)
+                    myURL = (self.proxy_url + f"/policy/api/v1/infra/tier-1s/{self.t1_api_name}/nat/USER/nat-rules/" + (n['display_name']).replace(" ", "-") + "-" + new_ip_name_dash)
                     myHeader = {'csp-auth-token': self.vmc_auth.access_token}
                     response = requests.put(myURL, headers=myHeader, json=json_data)
                     json_response_status_code = response.status_code
