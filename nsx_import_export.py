@@ -128,15 +128,15 @@ def main(args):
 
     if 'EXP_srcNSXmgrURL' in os.environ:
         ioObj.srcNSXmgrURL = os.environ['EXP_srcNSXmgrURL']
-        print('Loaded source NSX manager URL from environment variable')
+        print(f"Loaded source NSX manager URL from environment variable: {os.environ['EXP_srcNSXmgrURL']}")
 
     if 'EXP_srcNSXmgrUsername' in os.environ:
         ioObj.srcNSXmgrUsername = os.environ['EXP_srcNSXmgrUsername']
-        print('Loaded source NSX manager username from environment variable')
+        print(f"Loaded source NSX manager username from environment variable: {os.environ['EXP_srcNSXmgrUsername']}")
 
     if 'EXP_srcNSXmgrPassword' in os.environ:
         ioObj.srcNSXmgrPassword = os.environ['EXP_srcNSXmgrPassword']
-        print('Loaded source NSX manager password from environment variable')
+        print(f"Loaded source NSX manager password from environment variable: {'*' * len(os.environ['EXP_srcNSXmgrPassword'])}")
     
 
     # Check the optional command-line arguments to override the values in vmc.ini
