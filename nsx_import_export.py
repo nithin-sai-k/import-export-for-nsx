@@ -126,18 +126,20 @@ def main(args):
         ioObj.source_refresh_token = os.environ['EXP_source_refresh_token']
         print('Loaded source refresh token from environment variable')
 
-    if 'EXP_srcNSXmgrURL' in os.environ:
-        ioObj.srcNSXmgrURL = os.environ['EXP_srcNSXmgrURL']
-        print(f"Loaded source NSX manager URL from environment variable: {os.environ['EXP_srcNSXmgrURL']}")
+    if ioObj.auth_mode == "local":
+        if 'EXP_srcNSXmgrURL' in os.environ:
+            ioObj.srcNSXmgrURL = os.environ['EXP_srcNSXmgrURL']
+            print(f"Loaded source NSX manager URL from environment variable: {os.environ['EXP_srcNSXmgrURL']}")
 
-    if 'EXP_srcNSXmgrUsername' in os.environ:
-        ioObj.srcNSXmgrUsername = os.environ['EXP_srcNSXmgrUsername']
-        print(f"Loaded source NSX manager username from environment variable: {os.environ['EXP_srcNSXmgrUsername']}")
+        if 'EXP_srcNSXmgrUsername' in os.environ:
+            ioObj.srcNSXmgrUsername = os.environ['EXP_srcNSXmgrUsername']
+            print(f"Loaded source NSX manager username from environment variable: {os.environ['EXP_srcNSXmgrUsername']}")
 
-    if 'EXP_srcNSXmgrPassword' in os.environ:
-        ioObj.srcNSXmgrPassword = os.environ['EXP_srcNSXmgrPassword']
-        print(f"Loaded source NSX manager password from environment variable: {'*' * len(os.environ['EXP_srcNSXmgrPassword'])}")
-    
+        if 'EXP_srcNSXmgrPassword' in os.environ:
+            ioObj.srcNSXmgrPassword = os.environ['EXP_srcNSXmgrPassword']
+            print(f"Loaded source NSX manager password from environment variable: {'*' * len(os.environ['EXP_srcNSXmgrPassword'])}")
+    else:
+        print(f"Not loading local NSX environment variables because auth_mode={ioObj.auth_mode}")
 
     # Check the optional command-line arguments to override the values in vmc.ini
     if args.source_refresh_token:
@@ -599,6 +601,12 @@ def main(args):
             else:
                 print("SDDC tags export error: {}".format(ioObj.lastJSONResponse))
 
+            print("Beginning Domains export...")
+            retval = ioObj.export_domains()
+            if retval is True:
+                print("Domains exported.")
+            else:
+                print("Domains export error: {}".format(ioObj.lastJSONResponse))
 
             print("Beginning VMs export...")
             retval = ioObj.exportSDDCVMs()

@@ -109,6 +109,7 @@ class VMCImportExport:
         self.auth_mode                    = vmcConfig.get("vmcConfig", "auth_mode")
         if self.auth_mode == "token":
             self.vmc_auth                     = vmc_auth.VMCAuth(strCSPProdURL=self.strCSPProdURL)
+        self.nsx_endpoint_type        = vmcConfig.get("vmcConfig", "nsx_endpoint_type")
         self.source_refresh_token     = vmcConfig.get("vmcConfig", "source_refresh_token")
         self.source_nsx_mgr_cookie    = None
         self.source_nsx_mgr_token     = None
@@ -284,6 +285,9 @@ class VMCImportExport:
 
         #CGW groups
         self.cgw_groups_filename     = self.loadConfigFilename(config,"importConfig","cgw_groups_filename")
+
+        #Domains
+        self.domains_filename       = self.loadConfigFilename(config, "exportConfig", "domains_filename")
 
         #MGW groups
         self.mgw_groups_filename     = self.loadConfigFilename(config,"importConfig","mgw_groups_filename")
@@ -1334,6 +1338,26 @@ class VMCImportExport:
         with open(fname, 'w') as outfile:
             json.dump(sddc_tags, outfile,indent=4)
         return True        
+
+    def export_domains(self):
+        """Exports all VMs found in the NSX-T manager"""
+
+        if self.auth_mode =="token":
+            myURL = (self.proxy_url + "/policy/api/v1/infra/domains")
+            response = self.invokeVMCGET(myURL)
+        else:
+            myURL = (self.srcNSXmgrURL + "/policy/api/v1/infra/domains")
+            response = self.invokeNSXTGET(myURL)
+
+        if response is None or response.status_code != 200:
+            return False
+        json_response = response.json()
+        domains_list = json_response['results']
+
+        fname = self.export_path / self.domains_filename
+        with open(fname, 'w') as outfile:
+            json.dump(domains_list, outfile,indent=4)
+        return True
 
     def exportSDDCVMs(self):
         """Exports all VMs found in the NSX-T manager"""
@@ -3857,6 +3881,8 @@ class VMCImportExport:
                 return 'cgw_groups.json'
             elif (key == 'mgw_groups_filename'):
                 return 'mgw_groups.json'
+            elif (key == 'domains_filename'):
+                return 'domains.json'
             elif (key == 'vpn_ike_filename'):
                 return 'vpn-ike.json'
             elif (key == 'vpn_dpd_filename'):
