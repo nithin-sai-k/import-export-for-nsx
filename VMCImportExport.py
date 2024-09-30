@@ -1119,6 +1119,21 @@ class VMCImportExport:
         json_response = response.json()
         return json_response
     
+    def get_domains(self):
+        """Exports Domains"""
+        if self.auth_mode =="token":
+            myURL = (self.proxy_url + "/policy/api/v1/infra/domains")
+            response = self.invokeVMCGET(myURL)
+        else:
+            myURL = (self.srcNSXmgrURL + "/policy/api/v1/infra/domains")
+            response = self.invokeNSXTGET(myURL)
+
+        if response is None or response.status_code != 200:
+            return False
+
+        json_response = response.json()
+        return json_response['results']
+
     def export_route_config(self):
         """Exports the SDDC route configuration"""
         my_url = f'{self.proxy_url}/cloud-service/api/v1/infra/external/route/configs'

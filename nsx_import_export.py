@@ -79,7 +79,7 @@ def main(args):
                                     "python sddc_import_export.py -o import\n\n"
                                     "Import an SDDC from a zipfile:\n"
                                     "python sddc_import_export.py -o import -i json/2020-12-15_10-33-43_json-export.zip\n\n")
-    ap.add_argument("-o","--operation", required=True, choices=['export','check-vmc-ini', 'list-t1', 'import'], help="export begins an NSX-T export. import begins an NSX-T import. check-vmc-ini displays the currently configured Org and SDDC for export operations with token authentication. list-t1 lists all T1 gateways.")
+    ap.add_argument("-o","--operation", required=True, choices=['export','check-vmc-ini', 'list-t1s', 'list-domains','import'], help="export begins an NSX-T export. import begins an NSX-T import. check-vmc-ini displays the currently configured Org and SDDC for export operations with token authentication. list-t1s lists all T1 gateways. list-domains lists all NSX-T domains.")
     #ap.add_argument("-t", "--test-name", required=False, nargs='+', choices=['create-cgw-groups','delete-cgw-groups','delete-all-cgw-groups'])
     #ap.add_argument("-n", "--num-objects", required=False, type=int, default=1000)
     #ap.add_argument("-sn", "--start-num", required=False, type=int, default=0)
@@ -488,7 +488,7 @@ def main(args):
         print(f'Import configuration: Org {ioObj.dest_org_display_name} ({ioObj.dest_org_id}), SDDC {ioObj.dest_sddc_name} ({ioObj.dest_sddc_id}), SDDC version {ioObj.dest_sddc_version}, NSX-T Manager reachable.')
 
 
-    if intent_name == "export" or intent_name == "export-import" or intent_name == "list-t1":
+    if intent_name == "export" or intent_name == "export-import" or intent_name == "list-t1s" or intent_name == "list-domains":
         no_intent_found = False
 
         if ioObj.auth_mode == "token":
@@ -532,7 +532,7 @@ def main(args):
                 print("NSX-T manager authentication failed.")
                 sys.exit()
 
-        if intent_name == "list-t1":
+        if intent_name == "list-t1s":
             json_response = ioObj.get_t1_gateways()
             if json_response is None:
                 print("Unable to retrieve T1 gateways.")
@@ -551,6 +551,15 @@ def main(args):
 
             return
         
+        if intent_name == "list-domains":
+            json_response = ioObj.get_domains()
+            if json_response is None:
+                print("Unable to retrieve domains.")
+
+            for domain in json_response:
+                print(f"Domain: {domain['id']}, path: {domain['path']}, unique_id: {domain['unique_id']}")
+            return
+
         # Delete old JSON files
         if ioObj.export_type == 'os' and ioObj.export_purge_before_run is True:
             print('Deleting old JSON export files...')
@@ -1098,7 +1107,9 @@ def main(args):
         print("\nTo export your source SDDC to JSON")
         print("export")
         print("\nTo list all Tier-1 gateways: ")
-        print("list-t1")
+        print("list-t1s")
+        print("\nTo list all NSX-T domains: ")
+        print("list-domains")
 
 
 if __name__ == '__main__':
