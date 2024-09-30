@@ -608,6 +608,13 @@ def main(args):
             else:
                 print("Domains export error: {}".format(ioObj.lastJSONResponse))
 
+            print("Beginning Gateway Policies export...")
+            retval = ioObj.export_gateway_policies()
+            if retval is True:
+                print("Gateway Policies exported.")
+            else:
+                print("Gateway policy export error: {}".format(ioObj.lastJSONResponse))
+
             print("Beginning VMs export...")
             retval = ioObj.exportSDDCVMs()
             if retval is True:

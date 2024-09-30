@@ -289,6 +289,9 @@ class VMCImportExport:
         #Domains
         self.domains_filename       = self.loadConfigFilename(config, "exportConfig", "domains_filename")
 
+        #Gateway Policy
+        self.gateway_policy_filename = self.loadConfigFilename(config, "exportConfig", "gateway_policy_filename")
+
         #MGW groups
         self.mgw_groups_filename     = self.loadConfigFilename(config,"importConfig","mgw_groups_filename")
 
@@ -1140,6 +1143,21 @@ class VMCImportExport:
         json_response = response.json()
         return json_response['results']
 
+    def get_gateway_policies(self):
+        """Exports a list of all Gateway policies"""
+        if self.auth_mode =="token":
+            myURL = (self.proxy_url + "/policy/api/v1/infra/domains/default/gateway-policies")
+            response = self.invokeVMCGET(myURL)
+        else:
+            myURL = (self.srcNSXmgrURL + "/policy/api/v1/infra/domains/default/gateway-policies")
+            response = self.invokeNSXTGET(myURL)
+
+        if response is None or response.status_code != 200:
+            return False
+        
+        json_response = response.json()
+        return json_response['results']        
+
     def export_route_config(self):
         """Exports the SDDC route configuration"""
         my_url = f'{self.proxy_url}/cloud-service/api/v1/infra/external/route/configs'
@@ -1339,6 +1357,16 @@ class VMCImportExport:
             json.dump(sddc_tags, outfile,indent=4)
         return True        
 
+    def export_gateway_policies(self):
+        """Exports all gateway policies found in the NSX-T manager"""
+        json_response = self.get_gateway_policies()
+        if json_response is False:
+            return False
+        fname = self.export_path / self.gateway_policy_filename
+        with open(fname, 'w') as outfile:
+            json.dump(json_response, outfile,indent=4)
+            return True            
+        
     def export_domains(self):
         """Exports all VMs found in the NSX-T manager"""
 
@@ -1358,7 +1386,7 @@ class VMCImportExport:
         with open(fname, 'w') as outfile:
             json.dump(domains_list, outfile,indent=4)
         return True
-
+    
     def exportSDDCVMs(self):
         """Exports all VMs found in the NSX-T manager"""
 
@@ -3883,6 +3911,8 @@ class VMCImportExport:
                 return 'mgw_groups.json'
             elif (key == 'domains_filename'):
                 return 'domains.json'
+            elif (key == 'gateway_policy_filename'):
+                return 'gateway-policy.json'            
             elif (key == 'vpn_ike_filename'):
                 return 'vpn-ike.json'
             elif (key == 'vpn_dpd_filename'):
