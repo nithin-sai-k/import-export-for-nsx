@@ -753,7 +753,7 @@ def main(args):
         else:
             print("DFW rules export skipped.")
 
-        if ioObj.public_export is True:
+        if ioObj.public_export is True and ioObj.nsx_endpoint_type == "vmc":
             print("Beginning Public IP export...")
             retval = ioObj.exportSDDCListPublicIP()
             if retval is True:
@@ -761,7 +761,7 @@ def main(args):
             else:
                 print("Public IP export error: {}".format(ioObj.lastJSONResponse))
         else:
-            print("Public IP export skipped.")
+            print(f"Public IP export skipped. nsx_endpoint_type={ioObj.nsx_endpoint_type}")
 
         if ioObj.nat_export is True:
             print("Beginning NAT export...")
