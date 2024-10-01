@@ -726,11 +726,11 @@ def main(args):
             print("Beginning network segments export...")
             retval = ioObj.exportSDDCCGWnetworks()
             if retval is True:
-                print("CGW networks exported.")
+                print("Networks exported.")
             else:
-                print("CGW networks export error: {}".format(ioObj.lastJSONResponse))
+                print("Networks export error: {}".format(ioObj.lastJSONResponse))
         else:
-            print("CGW network segment export skipped.")
+            print("Network segment export skipped.")
         
         if ioObj.flex_segment_export is True  and ioObj.auth_mode =="token":
             print("Beginning flexible segment export...")

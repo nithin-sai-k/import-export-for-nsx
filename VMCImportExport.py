@@ -714,11 +714,16 @@ class VMCImportExport:
 
     def exportSDDCCGWnetworks(self):
         """Exports the CGW network segments to a JSON file"""
+
         if self.auth_mode =="token":
             myURL = (self.proxy_url + f"/policy/api/v1/infra/tier-1s/{self.t1_api_name}/segments")
             response = self.invokeVMCGET(myURL)
         else:
-            myURL = (self.srcNSXmgrURL + f"/policy/api/v1/infra/tier-1s/{self.t1_api_name}/segments")
+            if self.nsx_endpoint_type == "vmc":
+                myURL = (self.srcNSXmgrURL + f"/policy/api/v1/infra/tier-1s/{self.t1_api_name}/segments")
+            else:
+                myURL = (self.srcNSXmgrURL + f"/policy/api/v1/infra/segments/")
+
             response = self.invokeNSXTGET(myURL)
 
         if response is None or response.status_code != 200:
