@@ -106,10 +106,16 @@ class VMCImportExport:
         else:
             self.strProdURL               = vmcConfig.get("vmcConfig", "strProdURL")
             self.strCSPProdURL            = vmcConfig.get("vmcConfig", "strCSPProdURL")
+
         self.auth_mode                    = vmcConfig.get("vmcConfig", "auth_mode")
+        self.nsx_endpoint_type            = vmcConfig.get("vmcConfig", "nsx_endpoint_type")
         if self.auth_mode == "token":
-            self.vmc_auth                     = vmc_auth.VMCAuth(strCSPProdURL=self.strCSPProdURL)
-        self.nsx_endpoint_type        = vmcConfig.get("vmcConfig", "nsx_endpoint_type")
+            self.vmc_auth                 = vmc_auth.VMCAuth(strCSPProdURL=self.strCSPProdURL)
+            # If auth mode is token, then the endpoint type must be vmc.
+            if self.nsx_endpoint_type != "vmc":
+                self.nsx_endpoint_type        = "vmc"
+                print("Overriding nsx_endpoint_type, forcing to vmc because auth_mode=token")
+
         self.source_refresh_token     = vmcConfig.get("vmcConfig", "source_refresh_token")
         self.source_nsx_mgr_cookie    = None
         self.source_nsx_mgr_token     = None
