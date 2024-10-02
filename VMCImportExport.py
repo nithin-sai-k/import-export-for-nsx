@@ -3928,9 +3928,9 @@ class VMCImportExport:
             elif (key == 'nat_import_filename'):
                 return 'natrules.json'
             elif (key == 'cgw_groups_filename'):
-                return 'cgw_groups.json'
+                return 'cgw-groups.json'
             elif (key == 'mgw_groups_filename'):
-                return 'mgw_groups.json'
+                return 'mgw-groups.json'
             elif (key == 'domains_filename'):
                 return 'domains.json'
             elif (key == 'gateway_policy_filename'):
@@ -3948,9 +3948,9 @@ class VMCImportExport:
             elif (key == 'vpn_l2_filename'):
                 return 'vpn-l2.json'
             elif (key == 'sddc_info_filename'):
-                return 'sddc_info.json'
+                return 'sddc-info.json'
             elif (key == 'service_access_filename'):
-                return 'service_access.json'
+                return 'service-access.json'
             elif (key == 'vms_filename'):
                 return 'vms.json'
             elif (key == 'vm_vifs_filename'):
