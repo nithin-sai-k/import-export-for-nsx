@@ -300,6 +300,9 @@ class VMCImportExport:
         #Gateway Policy
         self.gateway_policy_filename = self.loadConfigFilename(config, "exportConfig", "gateway_policy_filename")
 
+        #T1 gateways
+        self.tier1_gateways_filename = self.loadConfigFilename(config, "exportConfig", "tier1_gateways_filename")
+
         #MGW groups
         self.mgw_groups_filename     = self.loadConfigFilename(config,"importConfig","mgw_groups_filename")
 
@@ -827,6 +830,16 @@ class VMCImportExport:
         with open(fname, 'w') as outfile:
             json.dump(sddc_MGWrules, outfile,indent=4)
         return True
+
+    def export_t1_gateways(self):
+        gateways_json = self.get_t1_gateways()
+        if gateways_json:
+            fname = self.export_path / self.tier1_gateways_filename
+            with open(fname, 'w') as outfile:
+                json.dump(gateways_json['results'], outfile,indent=4)
+            return True
+        else:
+            return False
 
     def exportSDDCCGWRule(self, gateway_policy_id: str = None):
         """Exports the CGW firewall rules to a JSON file"""
@@ -3934,7 +3947,9 @@ class VMCImportExport:
             elif (key == 'domains_filename'):
                 return 'domains.json'
             elif (key == 'gateway_policy_filename'):
-                return 'gateway-policy.json'            
+                return 'gateway-policy.json'
+            elif (key == 'tier1_gateways_filename'):
+                return 't1-gateways.json'
             elif (key == 'vpn_ike_filename'):
                 return 'vpn-ike.json'
             elif (key == 'vpn_dpd_filename'):

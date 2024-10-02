@@ -667,6 +667,12 @@ def main(args):
                 else:
                     print("No gateway policies were found, unable to export firewall rules.")
 
+                retval = ioObj.export_t1_gateways()
+                if retval is True:
+                    print("T1 gateways exported.")
+                else:
+                    print("T1 gateway export error: {}".format(ioObj.lastJSONResponse))  
+
         else:
             print("CGW export skipped.")
         
