@@ -820,20 +820,30 @@ class VMCImportExport:
             json.dump(sddc_MGWrules, outfile,indent=4)
         return True
 
-    def exportSDDCCGWRule(self):
+    def exportSDDCCGWRule(self, gateway_policy_id: str = None):
         """Exports the CGW firewall rules to a JSON file"""
         if self.auth_mode =="token":
             myURL = (self.proxy_url + f"/policy/api/v1/infra/domains/{self.nsx_domain_name}/gateway-policies/default/rules")
             response = self.invokeVMCGET(myURL)
         else:
-            myURL = (self.srcNSXmgrURL + f"/policy/api/v1/infra/domains/{self.nsx_domain_name}/gateway-policies/default/rules")
+            if self.nsx_endpoint_type == "vmc":
+                myURL = (self.srcNSXmgrURL + f"/policy/api/v1/infra/domains/{self.nsx_domain_name}/gateway-policies/default/rules")
+            else:
+                myURL = (self.srcNSXmgrURL + f"/policy/api/v1/infra/domains/{self.nsx_domain_name}/gateway-policies/{gateway_policy_id}/rules")
+
             response = self.invokeNSXTGET(myURL)
 
         if response is None or response.status_code != 200:
             return False
         json_response = response.json()
         sddc_CGWrules = json_response['results']
-        fname = self.export_path / self.cgw_export_filename
+        if gateway_policy_id is None:
+            fname = self.export_path / self.cgw_export_filename
+        else:
+            base_name, extension = self.cgw_export_filename.rsplit(".")
+            print(base_name, extension)
+            fname =  self.export_path / (base_name + "-" + gateway_policy_id + "." + extension)
+
         with open(fname, 'w') as outfile:
             json.dump(sddc_CGWrules, outfile,indent=4)
         return True

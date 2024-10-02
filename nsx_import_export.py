@@ -653,11 +653,21 @@ def main(args):
             else:
                 print("CGW groups export error: {}".format(ioObj.lastJSONResponse))
 
-            retval = ioObj.exportSDDCCGWRule()
-            if retval is True:
-                print("CGW rules exported.")
+            if ioObj.nsx_endpoint_type == "vmc":
+                retval = ioObj.exportSDDCCGWRule()
+                if retval is True:
+                    print("CGW rules exported.")
+                else:
+                    print("CGW export error: {}".format(ioObj.lastJSONResponse))    
             else:
-                print("CGW export error: {}".format(ioObj.lastJSONResponse))
+                policy_json = ioObj.get_gateway_policies()
+                if policy_json:
+                    for policy in policy_json:
+                        print(f"Exporting policy {policy['id']}")
+                        retval = ioObj.exportSDDCCGWRule(gateway_policy_id=policy['id'])
+                else:
+                    print("No gateway policies were found, unable to export firewall rules.")
+
         else:
             print("CGW export skipped.")
         
