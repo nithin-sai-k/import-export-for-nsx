@@ -11,9 +11,12 @@
     - [1.3.2. Download code](#132-download-code)
     - [1.3.3. Install Python modules and packages](#133-install-python-modules-and-packages)
     - [1.3.4. Update vmc.ini](#134-update-vmcini)
+      - [1.3.4.1 Token mode](#1341-token-mode)
+      - [1.3.4.2 Local mode](#1342-local-mode)
     - [1.3.5. Update config.ini](#135-update-configini)
   - [1.4. Running the script](#14-running-the-script)
     - [1.4.1. Export](#141-export)
+    - [1.4.2 Export history](#142-export-history)
     - [1.4.9. Running S3 export as a Lambda function](#149-running-s3-export-as-a-lambda-function)
 
 <!-- /TOC -->
@@ -53,7 +56,31 @@ python -m pip install -r requirements.txt
 
 ### 1.3.4. Update vmc.ini
 
-There are two authentication modes set in `vmc.ini`: `auth_mode = token` and `auth_mode = local`. Token mode uses a VMware Cloud on AWS API token to authenticate to the VMware Cloud on AWS service, and only works with VMC-A. If you have any other NSX-T deployment, you must use local mode. Local mode will authenticate directly from a local NSX-T manager. If you use token mode, you must fill in the refresh token and org/SDDC ID fields in `vmc.ini`. If you use local mode, you can fill in the `srcNSXmgrURL`, `srcNSXmgrUsername`, `srcNSXmgrPassword` fields in `vcenter.ini`. However, if you do not want credentials persisted in plaintext, you can use other methods shown below.
+There are two authentication modes set in `vmc.ini`: `auth_mode = token` and `auth_mode = local`. 
+
+#### 1.3.4.1 Token mode
+
+Token mode uses a VMware Cloud on AWS API token to authenticate to the VMware Cloud on AWS service, and only works with VMware Cloud on AWS. If you use token mode, you must fill in the refresh token and org/SDDC ID fields in `vmc.ini`.
+
+For token mode, access to the VMware Cloud on AWS API is dependent on a refresh token. To generate a token for your account, see the [Generate API Tokens](https://docs.vmware.com/en/VMware-Cloud-services/services/Using-VMware-Cloud-Services/GUID-E2A3B1C1-E9AD-4B00-A6B6-88D31FCDDF7C.html) help article.
+
+For token mode, the Org ID and SDDC ID can be found on the Support tab of your SDDCs.
+
+```bash
+# Refresh tokens generated in the VMC console. Users have a separate token in each org
+source_refresh_token    = XXXXXXXXXXXXXXX
+dest_refresh_token      = XXXXXXXXXXXXXXX
+
+# Organization and SDDC IDs are easily found in the support tab of any SDDC
+source_org_id           = XXXXXXXXXXXXXXX
+source_sddc_id          = XXXXXXXXXXXXXXX
+dest_org_id             = XXXXXXXXXXXXXXX
+dest_sddc_id            = XXXXXXXXXXXXXXX
+```
+
+#### 1.3.4.2 Local mode
+
+You can use local mode to authenticate directly against the NSX-T manager in VMware Cloud on AWS. If you have any other NSX-T deployment, you *must* use local mode. If you use local mode, you can fill in the `srcNSXmgrURL`, `srcNSXmgrUsername`, `srcNSXmgrPassword` fields in `vcenter.ini`. If you do not want credentials persisted in plaintext, you can use the methods shown below.
 
 Local mode supports environment variables `EXP_srcNSXmgrURL`, `EXP_srcNSXmgrUsername`, and `EXP_srcNSXmgrPassword`. If you set these environment variables, you do not need to save these values in `vcenter.ini`.
 
@@ -90,22 +117,6 @@ Enter source NSX manager password: ******************************
 
 If you use local mode, you do not need any other settings in `vmc.ini`
 
-For token mode, access to the VMware Cloud on AWS API is dependent on a refresh token. To generate a token for your account, see the [Generate API Tokens](https://docs.vmware.com/en/VMware-Cloud-services/services/Using-VMware-Cloud-Services/GUID-E2A3B1C1-E9AD-4B00-A6B6-88D31FCDDF7C.html) help article.
-
-For token mode, the Org ID and SDDC ID can be found on the Support tab of your SDDCs.
-
-```bash
-# Refresh tokens generated in the VMC console. Users have a separate token in each org
-source_refresh_token    = XXXXXXXXXXXXXXX
-dest_refresh_token      = XXXXXXXXXXXXXXX
-
-# Organization and SDDC IDs are easily found in the support tab of any SDDC
-source_org_id           = XXXXXXXXXXXXXXX
-source_sddc_id          = XXXXXXXXXXXXXXX
-dest_org_id             = XXXXXXXXXXXXXXX
-dest_sddc_id            = XXXXXXXXXXXXXXX
-```
-
 ### 1.3.5. Update config.ini
 
 Config.ini contains configuration sections for import and export.
@@ -132,9 +143,9 @@ nat_export_filename = natrules.json
 
 ### 1.4.1. Export
 
-Export will export your existing SDDC configuration from your source SDDC to a set of files that can be subsequently used for import.
+Export will export your existing configuration from your source SDDC/NSX manager to a set of files that can be subsequently used for import.
 
-Run the following command to export:
+For a VMware Cloud on AWS endpoint, run the following command to export:
 
 Windows
 
@@ -193,9 +204,13 @@ If all of the export options are enabled, this will export a set of files:
 - vpn-local-bgp.json
 - vpn-tunnel.json
 
+For a non-VMC NSX manager endpoint, you must provide input to the script.
+
+### 1.4.2 Export history
+
 A config.ini flag named 'export_history' allows for the JSON files to be zipped for archival purposes. A related configuration option named 'max_export_history_files' lets you control how many zipped archive files are retained.
 
-Export is read-only and will not make any changes to your source NSX manager.
+Export is read-only and will not make any changes to your source NSX.
 
 ### 1.4.9. Running S3 export as a Lambda function
 
