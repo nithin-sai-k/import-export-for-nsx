@@ -115,7 +115,6 @@ class VMCImportExport:
             if self.nsx_endpoint_type != "vmc":
                 self.nsx_endpoint_type        = "vmc"
                 print("Overriding nsx_endpoint_type, forcing to vmc because auth_mode=token")
-
         self.source_refresh_token     = vmcConfig.get("vmcConfig", "source_refresh_token")
         self.source_nsx_mgr_cookie    = None
         self.source_nsx_mgr_token     = None
@@ -288,6 +287,9 @@ class VMCImportExport:
         #CGW API name
         self.t1_api_name           = self.loadConfigSetting(config, "exportConfig", "t1_api_name")
         self.nsx_domain_name       = self.loadConfigSetting(config, "exportConfig", "nsx_domain_name")
+        if self.nsx_endpoint_type == "nsx":
+            self.nsx_domain_name = "default"
+            print("Overriding nsx_endpoint_type, forcing to default because nsx_endpoint_type=nsx")
 
         #CGW groups
         self.cgw_groups_filename     = self.loadConfigFilename(config,"importConfig","cgw_groups_filename")
