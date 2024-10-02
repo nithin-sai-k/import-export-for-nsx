@@ -551,7 +551,6 @@ def main(args):
                 else:
                     py_cmd = "python3"
 
-                print(json_response)
                 for t1 in json_response['results']:
                     
                     print(f"T1 name: {t1['display_name']}, path: {t1['path']}, relative path: {t1['relative_path']}, T0 path: {t1['tier0_path']}")
