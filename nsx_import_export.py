@@ -773,7 +773,7 @@ def main(args):
         else:
             print(f"Public IP export skipped. nsx_endpoint_type={ioObj.nsx_endpoint_type}")
 
-        if ioObj.nat_export is True:
+        if ioObj.nat_export is True and ioObj.nsx_endpoint_type == "vmc":
             print("Beginning NAT export...")
             retval = ioObj.exportSDDCNat()
             if retval is True:
