@@ -841,7 +841,6 @@ class VMCImportExport:
             fname = self.export_path / self.cgw_export_filename
         else:
             base_name, extension = self.cgw_export_filename.rsplit(".")
-            print(base_name, extension)
             fname =  self.export_path / (base_name + "-" + gateway_policy_id + "." + extension)
 
         with open(fname, 'w') as outfile:
