@@ -894,6 +894,10 @@ def main(args):
         # This will make the program run just as if the calling function had passed in a full zipfile
         # path via import_file_path
 
+        if ioObj.nsx_endpoint_type == "nsx":
+            print("Import is only supported for VMware Cloud on AWS")
+            return
+
         if ioObj.sync_mode is True:
             if ioObj.public_import is True or ioObj.nat_import is True:
                 print("When sync mode is enabled, public IP import and NAT import should be disabled. Syncing public IPs and NAT configuration is not currently supported. If you are importing into an empty SDDC, it is safe to continue. If your destination SDDC has existing public IPs and NATs, you should cancel the import.")
