@@ -676,7 +676,7 @@ def main(args):
         else:
             print("CGW export skipped.")
         
-        if ioObj.mcgw_export is True and ioObj.auth_mode =="token":
+        if ioObj.mcgw_export is True and ioObj.nsx_endpoint_type == "vmc":
             print("Beginning Multi-T1 CGW export...")
             retval = ioObj.export_mcgw_config()
             if retval is True:
@@ -686,7 +686,7 @@ def main(args):
         else:
             print(f"Multi-T1 CGW export skipped: mcgw_export={ioObj.mcgw_export}, auth_mode={ioObj.auth_mode}")
 
-        if ioObj.mcgw_static_routes_export is True and ioObj.auth_mode =="token":
+        if ioObj.mcgw_static_routes_export is True and ioObj.nsx_endpoint_type == "vmc":
             print("Beginning Multi-T1 Static Routes Export")
             retval = ioObj.export_mcgw_static_routes()
             if retval is True:
@@ -696,7 +696,7 @@ def main(args):
         else:
             print(f"Multi-T1 static routes export skipped: mcgw_static_routes_export={ioObj.mcgw_static_routes_export}, auth_mode={ioObj.auth_mode}")
 
-        if ioObj.mcgw_fw_export is True and ioObj.auth_mode =="token":
+        if ioObj.mcgw_fw_export is True and ioObj.nsx_endpoint_type == "vmc":
             print("Beginning Multi-T1 North/South Firewall Policy and Rule Export")
             retval = ioObj.export_mcgw_fw()
 
@@ -707,7 +707,7 @@ def main(args):
         else:
             print(f"Multi-T1 Firewall Policy and Rules export skipped: mcgw_fw_export={ioObj.mcgw_fw_export}, auth_mode={ioObj.auth_mode}")
 
-        if ioObj.mpl_export is True and ioObj.auth_mode =="token":
+        if ioObj.mpl_export is True and ioObj.nsx_endpoint_type == "vmc":
             print("Beginning Connected VPC Managed Prefix List export")
             retval = ioObj.export_mpl()
             if retval is True:
@@ -717,7 +717,7 @@ def main(args):
         else:
             print(f"Connected VPC Managed Prefix List export skipped: mpl_export={ioObj.mpl_export}, auth_mode={ioObj.auth_mode}")
 
-        if ioObj.ral_export is True and ioObj.auth_mode =="token":
+        if ioObj.ral_export is True and ioObj.nsx_endpoint_type == "vmc":
             print('Beginning Route Aggegration list export')
             retval = ioObj.export_ral()
             if retval is True:
@@ -727,7 +727,7 @@ def main(args):
         else:
             print(f"SDDC Route Aggregation list export skipped: ral_export={ioObj.ral_export}, auth_mode={ioObj.auth_mode}")
 
-        if ioObj.route_config_export is True and ioObj.auth_mode =="token":
+        if ioObj.route_config_export is True and ioObj.nsx_endpoint_type == "vmc":
             print('Beginning SDDC route configuration export')
             retval = ioObj.export_route_config()
             if retval is True:
@@ -747,7 +747,7 @@ def main(args):
         else:
             print("Network segment export skipped.")
         
-        if ioObj.flex_segment_export is True  and ioObj.auth_mode =="token":
+        if ioObj.flex_segment_export is True  and ioObj.nsx_endpoint_type == "vmc":
             print("Beginning flexible segment export...")
             retval = ioObj.export_flexible_segments()
             retval2 = ioObj.export_flexible_segment_disc_bindings()
@@ -788,7 +788,7 @@ def main(args):
         else:
             print("NAT rules export skipped.")
 
-        if ioObj.nsx_adv_fw_export is True and ioObj.auth_mode =="token":
+        if ioObj.nsx_adv_fw_export is True and ioObj.nsx_endpoint_type == "vmc":
             if (ioObj.cgw_export is False or ioObj.network_export is False):
                 print("NSX Advanced Firewall export is enabled, but CGW export is not.")
                 print("Please enable export of Compute Gateway settings to capture all CGW Groups AND Segments, else import of NSX AF settings and rules may fail.")
@@ -802,7 +802,7 @@ def main(args):
             print(f"NSX Advanced Firewall export skipped: nsx_adv_fw_export={ioObj.nsx_adv_fw_export}, auth_mode={ioObj.auth_mode}")
 
 
-        if ioObj.service_access_export is True and ioObj.auth_mode =="token":
+        if ioObj.service_access_export is True and ioObj.nsx_endpoint_type == "vmc":
             print("Beginning Service Access export...")
             retval = ioObj.exportServiceAccess()
             if retval is True:
@@ -812,7 +812,7 @@ def main(args):
         else:
             print(f"Service access export skipped: nsx_adv_fw_export={ioObj.service_access_export}, auth_mode={ioObj.auth_mode}")
 
-        if ioObj.vpn_export is True and ioObj.auth_mode =="token":
+        if ioObj.vpn_export is True and ioObj.nsx_endpoint_type == "vmc":
             print("Beginning VPN export...")
             retval = ioObj.exportVPN()
             if retval is True:
@@ -822,7 +822,7 @@ def main(args):
         else:
             print(f"VPN export skipped: vpn_export={ioObj.vpn_export}, auth_mode={ioObj.auth_mode}")
 
-        if ioObj.tier1_vpn_export is True and ioObj.auth_mode =="token":
+        if ioObj.tier1_vpn_export is True and ioObj.nsx_endpoint_type == "vmc":
             print("Beginning export of Tier-1 VPNs")
             retval = ioObj.export_tier1_vpn()
             if retval is True:
@@ -832,7 +832,7 @@ def main(args):
         else:
             print(f"Tier-1 VPN export skipped: tier1_vpn_export={ioObj.tier1_vpn_export}, auth_mode={ioObj.auth_mode}")
         
-        if ioObj.nsx_l7_fqdn_export is True and ioObj.auth_mode =="token":
+        if ioObj.nsx_l7_fqdn_export is True and ioObj.nsx_endpoint_type == "vmc":
             print('Beginning NSX Layer 7 FQDN profile export')
             retval = ioObj.export_fqdn_attribute()
             if retval is True:
@@ -842,7 +842,7 @@ def main(args):
         else:
             print(f'FQDN profile export skipped: nsx_l7_fqdn_export={ioObj.nsx_l7_fqdn_export}, auth_mode={ioObj.auth_mode} ')
         
-        if ioObj.nsx_l7_context_profile_export is True and ioObj.auth_mode =="token":
+        if ioObj.nsx_l7_context_profile_export is True and ioObj.nsx_endpoint_type == "vmc":
             print('Beginning NSX Layer 7 context profile export')
             retval - ioObj.export_l7_cp()
             if retval is True:
