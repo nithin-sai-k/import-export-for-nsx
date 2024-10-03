@@ -126,6 +126,10 @@ def main(args):
         ioObj.source_refresh_token = os.environ['EXP_source_refresh_token']
         print('Loaded source refresh token from environment variable')
 
+    if 'EXP_dest_refresh_token' in os.environ:
+        ioObj.source_refresh_token = os.environ['EXP_dest_refresh_token']
+        print('Loaded destination refresh token from environment variable')        
+
     if ioObj.auth_mode == "local":
         if 'EXP_srcNSXmgrURL' in os.environ:
             ioObj.srcNSXmgrURL = os.environ['EXP_srcNSXmgrURL']

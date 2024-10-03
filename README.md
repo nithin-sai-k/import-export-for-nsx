@@ -67,6 +67,21 @@ Token mode uses a VMware Cloud on AWS API token to authenticate over the Interne
 
 For token mode, access to the VMware Cloud on AWS API is dependent on a refresh token. To generate a token for your account, see the [Generate API Tokens](https://docs.vmware.com/en/VMware-Cloud-services/services/Using-VMware-Cloud-Services/GUID-E2A3B1C1-E9AD-4B00-A6B6-88D31FCDDF7C.html) help article.
 
+Token mode supports the environment variable `EXP_source_refresh_token`.  If you set this environment variable, you do not need to save it in `vmc.ini`.
+
+Windows:
+
+```powershell
+$env:EXP_source_refresh_token = "xxxxx"
+```
+
+Linux/Mac:
+
+```bash
+EXP_source_refresh_token="xxxxx"
+export EXP_source_refresh_token
+```
+
 The Org ID and SDDC ID that are required for token mode can be found on the Support tab of your SDDC.
 
 ```bash
