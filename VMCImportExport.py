@@ -435,6 +435,8 @@ class VMCImportExport:
         fname =  curtime.strftime("%Y-%m-%d_%H-%M-%S") + '_' + 'json-export.zip'
         if self.append_sddc_id_to_zip is True:
             fname = self.source_sddc_id + "_" + fname
+        #Add the NSX endpoint type to the front of the filename to identify the source
+        fname = self.nsx_endpoint_type + "_" + fname
         self.export_zip_name = fname
         try:
             ZipPath = self.export_folder + '/' + fname

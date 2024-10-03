@@ -87,6 +87,8 @@ You can use local mode to authenticate directly against the NSX-T manager in VMw
 
 Local mode supports environment variables `EXP_srcNSXmgrURL`, `EXP_srcNSXmgrUsername`, and `EXP_srcNSXmgrPassword`. If you set these environment variables, you do not need to save these values in `vcenter.ini`.
 
+> Note: You can use the read-only NSX `audit` user for export operations when using local mode.
+
 Windows:
 
 ```powershell
@@ -218,7 +220,7 @@ Export is read-only and will not make any changes to your source NSX.
 
 ### 1.4.2 Export history
 
-A config.ini flag named 'export_history' allows for the JSON files to be zipped for archival purposes. A related configuration option named 'max_export_history_files' lets you control how many zipped archive files are retained.
+A config.ini flag named 'export_history' allows for the JSON files to be zipped for archival purposes. A related configuration option named 'max_export_history_files' lets you control how many zipped archive files are retained. By default, this is enabled and set to a retention of 1. The zipped file will be in the `/json` folder and in the format `nsx_yyyy-mm-dd_hh-mm-ss_json-export.json`.
 
 ### 1.4.9. Running S3 export as a Lambda function
 
