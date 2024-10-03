@@ -13,6 +13,7 @@
     - [1.3.4. Update vmc.ini](#134-update-vmcini)
       - [1.3.4.1 Token mode](#1341-token-mode)
       - [1.3.4.2 Local mode](#1342-local-mode)
+      - [1.3.4.3 NSX endpoint type](#1343-nsx-endpoint-type)
     - [1.3.5. Update config.ini](#135-update-configini)
   - [1.4. Running the script](#14-running-the-script)
     - [1.4.1. Export](#141-export)
@@ -22,7 +23,7 @@
 <!-- /TOC -->
 ## 1.2. Overview
 
-The Import/Export for NSX tool enable customers to save and restore their NSX-T network configurations.
+The Import/Export for NSX tool enable customers to save and restore their NSX-T network configurations. For the initial launch of the tool, only export is supported.
 
 There are many situations when customers want to migrate from an existing NSX-T deployment to a different one. While HCX addresses the data migration challenge, this tool offers customers the ability to copy the configuration from a source to a destination NSX-T instance, without having to deal with restoring an entire NSX-T binary and the subsequent outage caused during a restore.
 
@@ -34,11 +35,13 @@ This tool is dependent on Python3, you can find installation instructions for yo
 
 ### 1.3.2. Download code
 
-If you know git, clone the repo with
+If you know git, clone the repo with:
 
 ```bash
 git clone https://github.com/awslabs/import-export-for-nsx.git
 ```
+
+If you do not know git, you can download a zipfile from [Releases](https://github.com/awslabs/import-export-for-nsx/releases)
 
 ### 1.3.3. Install Python modules and packages
 
@@ -48,7 +51,7 @@ When you navigate to the nsx_import_export folder, you will find a requirements.
 pip3 install -r requirements.txt
 ```
 
-On Windows, use
+On Windows, run:
 
 ```powershell
 python -m pip install -r requirements.txt
@@ -60,11 +63,11 @@ There are two authentication modes set in `vmc.ini`: `auth_mode = token` and `au
 
 #### 1.3.4.1 Token mode
 
-Token mode uses a VMware Cloud on AWS API token to authenticate to the VMware Cloud on AWS service, and only works with VMware Cloud on AWS. If you use token mode, you must fill in the refresh token and org/SDDC ID fields in `vmc.ini`.
+Token mode uses a VMware Cloud on AWS API token to authenticate over the Internet to the VMware Cloud on AWS service. It can only be used with VMware Cloud on AWS, and not any other NSX-T endpoint. If you use token mode, you must fill in the refresh token and org/SDDC ID fields in `vmc.ini`.
 
 For token mode, access to the VMware Cloud on AWS API is dependent on a refresh token. To generate a token for your account, see the [Generate API Tokens](https://docs.vmware.com/en/VMware-Cloud-services/services/Using-VMware-Cloud-Services/GUID-E2A3B1C1-E9AD-4B00-A6B6-88D31FCDDF7C.html) help article.
 
-For token mode, the Org ID and SDDC ID can be found on the Support tab of your SDDCs.
+The Org ID and SDDC ID that are required for token mode can be found on the Support tab of your SDDC.
 
 ```bash
 # Refresh tokens generated in the VMC console. Users have a separate token in each org
@@ -84,22 +87,22 @@ You can use local mode to authenticate directly against the NSX-T manager in VMw
 
 Local mode supports environment variables `EXP_srcNSXmgrURL`, `EXP_srcNSXmgrUsername`, and `EXP_srcNSXmgrPassword`. If you set these environment variables, you do not need to save these values in `vcenter.ini`.
 
-Windows
+Windows:
 
 ```powershell
-$env:EXP_srcNSXmgrURL = ""
-$env:EXP_srcNSXmgrUsername = ""
-$env:EXP_srcNSXmgrPassword = ""
+$env:EXP_srcNSXmgrURL = "https://nsxmgr.fqdn.com"
+$env:EXP_srcNSXmgrUsername = "admin"
+$env:EXP_srcNSXmgrPassword = "password-for-admin"
 ```
 
-Linux/Mac
+Linux/Mac:
 
 ```bash
-EXP_srcNSXmgrURL=""
+EXP_srcNSXmgrURL="https://nsxmgr.fqdn.com"
 export EXP_srcNSXmgrURL
-EXP_srcNSXmgrUsername=""
+EXP_srcNSXmgrUsername="admin"
 export EXP_srcNSXmgrUsername
-EXP_srcNSXmgrPassword=""
+EXP_srcNSXmgrPassword="password-for-admin"
 export EXP_srcNSXmgrPassword
 ```
 
@@ -108,14 +111,21 @@ If you do not want to use environment variables, you can leave them blank. If va
 ```bash
 Current authentication mode: local
 Source NSX manager URL was not found in the environment variables.
-Enter source NSX manager URL: http://nsxmgr.domain.local
+Enter source NSX manager URL: http://nsxmgr.fqdn.com
 Source NSX manager username was not found in the environment variables.
 Enter source NSX manager username: admin
 Source NSX password was not found in the environment variables.
 Enter source NSX manager password: ******************************
 ```
 
-If you use local mode, you do not need any other settings in `vmc.ini`
+If you use local mode, the only other setting in `vmc.ini` that you need to consider is `nsx_endpoint_type`
+
+#### 1.3.4.3 NSX endpoint type
+
+`vmc.ini` contains a variable named `nsx_endpoint_type`. It can be set to one of two values:
+
+- vmc - Use this if your NSX-T endpoint is a VMware Cloud on AWS SDDC
+- nsx - Use this for any other NSX-T endpoint
 
 ### 1.3.5. Update config.ini
 
@@ -204,13 +214,11 @@ If all of the export options are enabled, this will export a set of files:
 - vpn-local-bgp.json
 - vpn-tunnel.json
 
-For a non-VMC NSX manager endpoint, you must provide input to the script.
+Export is read-only and will not make any changes to your source NSX.
 
 ### 1.4.2 Export history
 
 A config.ini flag named 'export_history' allows for the JSON files to be zipped for archival purposes. A related configuration option named 'max_export_history_files' lets you control how many zipped archive files are retained.
-
-Export is read-only and will not make any changes to your source NSX.
 
 ### 1.4.9. Running S3 export as a Lambda function
 
