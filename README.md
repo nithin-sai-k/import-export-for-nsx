@@ -59,7 +59,7 @@ python -m pip install -r requirements.txt
 
 ### 1.3.4. Update vmc.ini
 
-There are two authentication modes set in `vmc.ini`: `auth_mode = token` and `auth_mode = local`. 
+There are two authentication modes set in `vmc.ini`: `auth_mode = token` and `auth_mode = local`.
 
 #### 1.3.4.1 Token mode
 
@@ -67,12 +67,14 @@ Token mode uses a VMware Cloud on AWS API token to authenticate over the Interne
 
 For token mode, access to the VMware Cloud on AWS API is dependent on a refresh token. To generate a token for your account, see the [Generate API Tokens](https://docs.vmware.com/en/VMware-Cloud-services/services/Using-VMware-Cloud-Services/GUID-E2A3B1C1-E9AD-4B00-A6B6-88D31FCDDF7C.html) help article.
 
-Token mode supports the environment variable `EXP_source_refresh_token`.  If you set this environment variable, you do not need to save it in `vmc.ini`.
+Token mode supports the environment variables `EXP_source_refresh_token`, `EXP_source_org_id`, and `EXP_source_sddc_id`.  If you set these environment variables, you do not need to save them in `vmc.ini`. If you do not want to use the ini file or environment variables, you can leave them blank. The program will prompt you to input the required values when you execute it.
 
 Windows:
 
 ```powershell
 $env:EXP_source_refresh_token = "xxxxx"
+$env:EXP_source_org_id = "xxxxx"
+$env:EXP_source_sddc_id = "xxxxx"
 ```
 
 Linux/Mac:
@@ -80,6 +82,10 @@ Linux/Mac:
 ```bash
 EXP_source_refresh_token="xxxxx"
 export EXP_source_refresh_token
+EXP_source_org_id="xxxxx"
+export EXP_source_org_id
+EXP_source_sddc_id="xxxxx"
+export EXP_source_sddc_id
 ```
 
 The Org ID and SDDC ID that are required for token mode can be found on the Support tab of your SDDC.

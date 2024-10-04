@@ -122,13 +122,30 @@ def main(args):
     ioObj = VMCImportExport(CONFIG_FILE_PATH,VMC_CONFIG_FILE_PATH, AWS_CONFIG_FILE_PATH)
 
     # Check environment variables to override the values in vmc.ini
-    if 'EXP_source_refresh_token' in os.environ:
-        ioObj.source_refresh_token = os.environ['EXP_source_refresh_token']
-        print('Loaded source refresh token from environment variable')
+    if ioObj.auth_mode == "token":
+        if 'EXP_source_refresh_token' in os.environ:
+            ioObj.source_refresh_token = os.environ['EXP_source_refresh_token']
+            print('Loaded source refresh token from environment variable')
 
-    if 'EXP_dest_refresh_token' in os.environ:
-        ioObj.source_refresh_token = os.environ['EXP_dest_refresh_token']
-        print('Loaded destination refresh token from environment variable')        
+        if 'EXP_dest_refresh_token' in os.environ:
+            ioObj.source_refresh_token = os.environ['EXP_dest_refresh_token']
+            print('Loaded destination refresh token from environment variable')   
+
+        if 'EXP_source_org_id' in os.environ:
+            ioObj.source_org_id = os.environ['EXP_source_org_id']
+            print('Loaded source org ID from environment variable')
+
+        if 'EXP_source_sddc_id' in os.environ:
+            ioObj.source_sddc_id = os.environ['EXP_source_sddc_id']
+            print('Loaded source SDDC ID from environment variable')
+
+        if 'EXP_dest_org_id' in os.environ:
+            ioObj.dest_org_id = os.environ['EXP_dest_org_id']
+            print('Loaded dest org ID from environment variable')
+
+        if 'EXP_dest_sddc_id' in os.environ:
+            ioObj.dest_sddc_id = os.environ['EXP_dest_sddc_id']
+            print('Loaded dest SDDC ID from environment variable')
 
     if ioObj.auth_mode == "local":
         if 'EXP_srcNSXmgrURL' in os.environ:
@@ -210,6 +227,19 @@ def main(args):
     print(f"Current authentication mode: {ioObj.auth_mode}")
 
     # If env variables are not populated, prompt user for input
+    if ioObj.auth_mode == "token":
+        while ioObj.source_refresh_token == "":
+            print("Source refresh token was not found in the environment variables.")
+            ioObj.source_refresh_token = input("Enter source refresh token: ")
+
+        while ioObj.source_org_id == "":
+            print("Source org_id was not found in the environment variables.")
+            ioObj.source_org_id = input("Enter source org ID: ")
+
+        while ioObj.source_sddc_id == "":
+            print("Source sddc_id was not found in the environment variables.")
+            ioObj.source_sddc_id = input("Enter source sddc ID: ")                     
+
     if ioObj.auth_mode == "local":
         while ioObj.srcNSXmgrURL == "":
             print("Source NSX manager URL was not found in the environment variables.")
