@@ -31,7 +31,7 @@ There are many situations when customers want to migrate from an existing NSX-T 
 
 ### 1.3.1. Install Python
 
-This tool is dependent on Python3, you can find installation instructions for your operating system in the Python [documentation](https://wiki.python.org/moin/BeginnersGuide/Download).
+This tool is dependent on Python3, you can find installation instructions for your operating system in the Python [documentation](https://wiki.python.org/moin/BeginnersGuide/Download). Python 3.10 or greater is required.
 
 ### 1.3.2. Download code
 
@@ -187,6 +187,19 @@ Linux/Mac
 ```bash
 python3 nsx_import_export.py -o export
 ```
+
+On MacOS, you may have to specify the Python version in your command. For example, if you install Python 3.12, you might have execute `python3.12` instead of `python3`, as `python3` may default to the MacOS default of Python 3.8. You can resolve this by either typing the command as:
+
+ ```bash
+ python3 nsx_import_export.py -o export
+ ```
+
+ Alternatively, you could create an alias in your `~/.profile` and use the alias as your command.
+
+ ```bash
+ # ~/.profile
+ alias python='python3.1.2'
+ ```
 
 If all of the export options are enabled, this will export a set of files:
 
