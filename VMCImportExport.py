@@ -286,10 +286,16 @@ class VMCImportExport:
 
         #CGW API name
         self.t1_api_name           = self.loadConfigSetting(config, "exportConfig", "t1_api_name")
+        if self.t1_api_name is None:
+            self.t1_api_name = "cgw"
+
         self.nsx_domain_name       = self.loadConfigSetting(config, "exportConfig", "nsx_domain_name")
         if self.nsx_endpoint_type == "nsx":
             self.nsx_domain_name = "default"
             print("Overriding nsx_endpoint_type, forcing to default because nsx_endpoint_type=nsx")
+        elif self.nsx_endpoint_type == "vmc":
+            self.nsx_domain_name = "cgw"
+            print("Overriding nsx_endpoint_type, forcing to cgw because nsx_endpoint_type=vmc")
 
         #CGW groups
         self.cgw_groups_filename     = self.loadConfigFilename(config,"importConfig","cgw_groups_filename")
@@ -921,6 +927,10 @@ class VMCImportExport:
 
     def export_mcgw_static_routes(self):
         """Exports any static routes configured on a multi-T1 CGW to a JSON file"""
+        if self.auth_mode == "local":
+            self.lastJSONResponse = "export_mcgw_static_routes not supported in local mode."
+            return False
+
         my_url = f'{self.proxy_url}/policy/api/v1/search?query=resource_type:Tier1'
         response = self.invokeCSPGET(my_url)
         if response is None or response.status_code != 200:
@@ -950,6 +960,11 @@ class VMCImportExport:
 
     def export_mcgw_fw(self):
         """Exports all North/South firewall policies"""
+
+        if self.auth_mode == "local":
+            self.lastJSONResponse = "export_mcgw_fw not supported in local mode."
+            return False
+
         my_url = f'{self.proxy_url}/policy/api/v1/search?query=resource_type:GatewayPolicy'
         response = self.invokeCSPGET(my_url)
         if response is None or response.status_code != 200:
@@ -1197,6 +1212,11 @@ class VMCImportExport:
 
     def export_route_config(self):
         """Exports the SDDC route configuration"""
+
+        if self.auth_mode == "local":
+            self.lastJSONResponse = "export_route_config not supported in local mode."
+            return False
+
         my_url = f'{self.proxy_url}/cloud-service/api/v1/infra/external/route/configs'
         response = self.invokeCSPGET(my_url)
         if response is None or response.status_code != 200:

@@ -709,7 +709,7 @@ def main(args):
 
         else:
             print("CGW export skipped.")
-        
+
         if ioObj.mcgw_export is True and ioObj.nsx_endpoint_type == "vmc":
             print("Beginning Multi-T1 CGW export...")
             retval = ioObj.export_mcgw_config()
