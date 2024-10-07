@@ -65,7 +65,7 @@ There are two authentication modes set in `vmc.ini`: `auth_mode = token` and `au
 
 Token mode uses a VMware Cloud on AWS API token to authenticate over the Internet to the VMware Cloud on AWS service. It can only be used with VMware Cloud on AWS, and not any other NSX-T endpoint. If you use token mode, you must fill in the refresh token and org/SDDC ID fields in `vmc.ini`.
 
-For token mode, access to the VMware Cloud on AWS API is dependent on a refresh token. To generate a token for your account, see the [Generate API Tokens](https://docs.vmware.com/en/VMware-Cloud-services/services/Using-VMware-Cloud-Services/GUID-E2A3B1C1-E9AD-4B00-A6B6-88D31FCDDF7C.html) help article.
+For token mode, access to the VMware Cloud on AWS API is dependent on a refresh token. To generate a token for your account, see the [Generate API Tokens](https://docs.vmware.com/en/VMware-Cloud-services/services/Using-VMware-Cloud-Services/GUID-E2A3B1C1-E9AD-4B00-A6B6-88D31FCDDF7C.html) help article. Both `VMware Cloud on AWS Administrator` and `VMware Cloud on AWS NSX Cloud Admin` roles are required.
 
 Token mode supports the environment variables `EXP_source_refresh_token`, `EXP_source_org_id`, and `EXP_source_sddc_id`.  If you set these environment variables, you do not need to save them in `vmc.ini`. If you do not want to use the ini file or environment variables, you can leave them blank. The program will prompt you to input the required values when you execute it.
 
