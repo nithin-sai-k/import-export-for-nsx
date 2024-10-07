@@ -1,4 +1,4 @@
-# vCenter client module for SDDC Import/Export for VMware Cloud on AWS
+# vCenter client module for Import/Export for NSX
 ################################################################################
 ### Copyright 2020-2021 VMware, Inc.
 ### SPDX-License-Identifier: BSD-2-Clause

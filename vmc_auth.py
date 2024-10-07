@@ -1,4 +1,4 @@
-## API authentication module for VMware Cloud on AWS
+## API authentication module for Import/Export for NSX
 
 ################################################################################
 ### Copyright 2020-2023 VMware, Inc.

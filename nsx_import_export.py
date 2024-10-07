@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SDDC Import/Export for VMware Cloud on AWS
+# Import/Export for NSX
 
 ################################################################################
 ### Copyright 2020-2023 VMware, Inc.
@@ -12,7 +12,7 @@
 
 """
 
-Welcome to SDDC Import/Export ! 
+Welcome to Import/Export for NSX ! 
 
 VMware Cloud on AWS API Documentation is available at: https://code.vmware.com/apis/920/vmware-cloud-on-aws
 CSP API documentation is available at https://console.cloud.vmware.com/csp/gateway/api-docs
@@ -469,7 +469,7 @@ def main(args):
             print("Beginning DFW import...")
             ioObj.importOnPremDFWRule()
 
-        print("Import has been concluded. Thank you for using SDDC Import/Export for VMware Cloud on AWS.")
+        print("Import has been concluded. Thank you for using Import/Export for NSX.")
 
     if intent_name == "check-vmc-ini":
         no_intent_found = False
@@ -918,7 +918,7 @@ def main(args):
             if retval is True:
                 print('Zipfile maintenance completed with no errors.')
 
-        print("Export has been concluded. Thank you for using SDDC Import/Export for VMware Cloud on AWS.")
+        print("Export has been concluded. Thank you for using Import/Export for NSX.")
 
     if intent_name == "import" or intent_name == "export-import":
         no_intent_found = False
@@ -1173,7 +1173,7 @@ def main(args):
                 print('Compute groups import is set to false, this can cause import errors if compute group objects are missing.')
             ioObj.importSDDCDFWRule()
 
-        print("Import has been concluded. Thank you for using SDDC Import/Export for VMware Cloud on AWS.")
+        print("Import has been concluded. Thank you for using Import/Export for NSX")
 
     if no_intent_found:
         print("\nWelcome to sddc_import_export!")
