@@ -897,6 +897,10 @@ class VMCImportExport:
 
     def export_mcgw_config(self):
         """Exports Multi-T1 CGW configuration to a JSON file"""
+        if self.auth_mode == "local":
+            self.lastJSONResponse = "export_mcgw_config not supported in local mode."
+            return False
+  
         my_url = f'{self.proxy_url}/policy/api/v1/search?query=resource_type:Tier1'
         response = self.invokeCSPGET(my_url)
         if response is None or response.status_code != 200:
