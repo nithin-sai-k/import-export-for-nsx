@@ -292,10 +292,10 @@ class VMCImportExport:
         self.nsx_domain_name       = self.loadConfigSetting(config, "exportConfig", "nsx_domain_name")
         if self.nsx_endpoint_type == "nsx":
             self.nsx_domain_name = "default"
-            print("Overriding nsx_endpoint_type, forcing to default because nsx_endpoint_type=nsx")
+            print("Overriding nsx_domain_name, forcing to default because nsx_endpoint_type=nsx")
         elif self.nsx_endpoint_type == "vmc":
             self.nsx_domain_name = "cgw"
-            print("Overriding nsx_endpoint_type, forcing to cgw because nsx_endpoint_type=vmc")
+            print("Overriding nsx_domain_name, forcing to cgw because nsx_endpoint_type=vmc")
 
         #CGW groups
         self.cgw_groups_filename     = self.loadConfigFilename(config,"importConfig","cgw_groups_filename")
