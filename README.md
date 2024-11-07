@@ -104,9 +104,12 @@ dest_sddc_id            = XXXXXXXXXXXXXXX
 
 #### 1.3.4.2 Local mode
 
-You can use local mode to authenticate directly against the NSX-T manager in VMware Cloud on AWS. If you have any other NSX-T deployment, you *must* use local mode. If you use local mode, you can fill in the `srcNSXmgrURL`, `srcNSXmgrUsername`, `srcNSXmgrPassword` fields in `vcenter.ini`. If you do not want credentials persisted in plaintext, you can use the methods shown below.
+You can use local mode to authenticate directly against the NSX-T manager in VMware Cloud on AWS. If you have any other NSX-T deployment, you *must* use local mode. If you have an NSX federation deployed and you use a Global Manager, you cannot use a Global Manager URL with this tool. You will have to retrieve each Local Manager URL and export each one in separate runs of this tool.
 
-> Note: You must use the *private* URL for direct NSX manager access with local mode. Local mode will not work if you use the public NSX URL. The private URL can be found under the `Access NSX Manager via internal network (Private)` section of the NSX Information tab in VMware Cloud on AWS. The URL will be in the following format: `https://nsxmanager.sddc-1.2.3.4.vmwarevmc.com`. Do not include any of the subdirectory paths, webpage names, or query strings - use only the URL including `https://`.
+If you use local mode, you can fill in the `srcNSXmgrURL`, `srcNSXmgrUsername`, `srcNSXmgrPassword` fields in `vcenter.ini`. If you do not want credentials persisted in plaintext, you can use the methods shown below.
+
+> Note: You must use the *private* URL for direct VMC-A NSX manager access with local mode. Local mode will not work if you use the public NSX URL. The private URL can be found under the `Access NSX Manager via internal network (Private)` section of the NSX Information tab in VMware Cloud on AWS. The URL will be in the following format: `https://nsxmanager.sddc-1.2.3.4.vmwarevmc.com`. Do not include any of the subdirectory paths, webpage names, or query strings - use only the URL including `https://`.
+
 
 Local mode supports environment variables `EXP_srcNSXmgrURL`, `EXP_srcNSXmgrUsername`, and `EXP_srcNSXmgrPassword`. If you set these environment variables, you do not need to save these values in `vcenter.ini`.
 
