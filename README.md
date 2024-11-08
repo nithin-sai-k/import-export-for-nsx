@@ -45,6 +45,26 @@ If you do not know git, you can download a zipfile from [Releases](https://githu
 
 ### 1.3.3. Install Python modules and packages
 
+You do not have to do a virtual environment configuration, but it a good practice to follow. Using Python's virtual environment functionality will prevent any libraries used in this program from overwriting versions already on your workstation.
+
+First, change into the code directory that you downloaded/cloned above.
+
+On Mac/Linux, run:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
+On Windows, run:
+
+```powershell
+python -m venv venv
+.\venv\Scripts\Activate.ps1
+```
+
+
+
 When you navigate to the nsx_import_export folder, you will find a requirements.txt file that list all your Python packages. They can all be installed by running the following command on Linux/Mac:
 
 ```bash
