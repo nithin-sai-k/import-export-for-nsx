@@ -23,9 +23,7 @@
 <!-- /TOC -->
 ## 1.2. Overview
 
-The Import/Export for NSX tool enable customers to save and restore their NSX-T network configurations. For the initial launch of the tool, only export is supported.
-
-There are many situations when customers want to migrate from an existing NSX-T deployment to a different one. While HCX addresses the data migration challenge, this tool offers customers the ability to copy the configuration from a source to a destination NSX-T instance, without having to deal with restoring an entire NSX-T binary and the subsequent outage caused during a restore.
+The Import/Export for NSX tool enables customers to export an on-prem or VMware Cloud on AWS NSX-T configuration.
 
 ## 1.3. Getting Started
 
