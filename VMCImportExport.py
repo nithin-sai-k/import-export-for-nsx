@@ -174,6 +174,7 @@ class VMCImportExport:
         #CGW
         self.cgw_export               = self.loadConfigFlag(config,"exportConfig","cgw_export")
         self.cgw_export_filename      = self.loadConfigFilename(config,"exportConfig","cgw_export_filename")
+        self.cgw_suppress_vti_export  = self.loadConfigFlag(config,"exportConfig","cgw_suppress_vti_export")
         self.cgw_import               = self.loadConfigFlag(config,"importConfig","cgw_import")
         self.cgw_import_filename      = self.loadConfigFilename(config,"importConfig","cgw_import_filename")
         self.cgw_import_exclude_list  = self.loadConfigRegex(config,"importConfig","cgw_import_exclude_list",'|')
@@ -866,6 +867,14 @@ class VMCImportExport:
             return False
         json_response = response.json()
         sddc_CGWrules = json_response['results']
+        print("Suppress", self.cgw_suppress_vti_export)
+        if self.cgw_suppress_vti_export:
+            print("Checking CGW rules to suppress default VTI rule...")
+            for rule in sddc_CGWrules:
+                if rule["path"] == "/infra/domains/cgw/gateway-policies/default/rules/default-vti-rule":
+                    sddc_CGWrules.remove(rule)
+                    print(f"Suppressed default VTI rule, cgw_suppress_vti_export={self.cgw_suppress_vti_export}")
+
         if gateway_policy_id is None:
             fname = self.export_path / self.cgw_export_filename
         else:
