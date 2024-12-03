@@ -23,7 +23,7 @@
 <!-- /TOC -->
 ## 1.2. Overview
 
-The Import/Export for NSX tool enables customers to export an on-prem or VMware Cloud on AWS NSX-T configuration.
+The Import/Export for NSX tool enables customers to export an on-prem or VMware Cloud on AWS NSX configuration to a zipfile. You can use this zipped export as an input for [Amazon Q Developer: Transform for VMware](https://aws.amazon.com/blogs/migration-and-modernization/getting-started-with-amazon-q-developer-transform-for-vmware/), which will automatically convert NSX to AWS native networking constructs.
 
 ## 1.3. Getting Started
 
