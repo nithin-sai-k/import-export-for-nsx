@@ -27,6 +27,8 @@ The Import/Export for NSX tool enables customers to export an on-prem or VMware 
 
 ## 1.3. Getting Started
 
+This product supports VMware Cloud on AWS and on-prem NSX with NSX Local Managers. There is not currently support for Global NSX Managers.
+
 ### 1.3.1. Install Python
 
 This tool is dependent on Python3, you can find installation instructions for your operating system in the Python [documentation](https://wiki.python.org/moin/BeginnersGuide/Download). Python 3.10 or greater is required.
